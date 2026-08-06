@@ -431,6 +431,10 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
         <thumbnailator.version>0.4.19</thumbnailator.version>
+                <commons-io.version>2.22.0</commons-io.version>
+                <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
+                <redistpl-plus-spring-boot-starter.version>1.0.x.20260630-SNAPSHOT</redistpl-plus-spring-boot-starter.version>
+                <slf4j.version>2.0.18</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -538,7 +542,30 @@
                 <version>${thumbnailator.version}</version>
                 <scope>test</scope>
             </dependency>
-        </dependencies>
+                <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet-api.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.easy4j</groupId>
+            <artifactId>redistpl-plus-spring-boot-starter</artifactId>
+            <version>${redistpl-plus-spring-boot-starter.version}</version>
+            <scope>test</scope>
+        </dependency>
+</dependencies>
     </dependencyManagement>
 
     <dependencies>
@@ -555,7 +582,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <version>${javax.servlet-api.version}</version>
             <optional>true</optional>
         </dependency>
 
@@ -563,13 +590,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.13</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.13</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -690,7 +717,7 @@
         <dependency>
             <groupId>io.github.easy4j</groupId>
             <artifactId>redistpl-plus-spring-boot-starter</artifactId>
-            <version>2.3.x.20241003-SNAPSHOT</version>
+            <version>${redistpl-plus-spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -704,7 +731,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>${commons-io.version}</version>
             <scope>test</scope>
         </dependency>
             <!-- For JUnit Jupiter -->
