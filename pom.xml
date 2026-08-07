@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.13</version>
+        <version>4.0.1</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -431,7 +431,7 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
         <thumbnailator.version>0.4.19</thumbnailator.version>
-                <redistpl-plus-spring-boot-starter.version>1.0.x.20260630-SNAPSHOT</redistpl-plus-spring-boot-starter.version>
+                <redistpl-plus-spring-boot-starter.version>3.0.x.20260630-SNAPSHOT</redistpl-plus-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
