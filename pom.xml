@@ -13,7 +13,7 @@
     <artifactId>playwright-spring-boot-starter</artifactId>
 
     <description>Spring Boot Starter For Playwright</description>
-    <version>3.2.x.20251227-SNAPSHOT</version>
+    <version>3.2.x.20260630-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/easy-4-java/${project.artifactId}</url>
     <packaging>jar</packaging>
@@ -431,11 +431,11 @@
         <pdfbox.version>3.0.3</pdfbox.version>
         <playwright.version>1.48.0</playwright.version>
         <spring-framework.version>5.3.39</spring-framework.version>
-        <spring-biz.version>1.1.5.RELEASE</spring-biz.version>
+        <spring-biz.version>2.0.x.20260630-SNAPSHOT</spring-biz.version>
         <snakeyaml.version>2.3</snakeyaml.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
         <thumbnailator.version>0.4.19</thumbnailator.version>
-        <spring-boot-starter-redistpl-plus.version>3.3.x.20241003.RELEASE</spring-boot-starter-redistpl-plus.version>
+        <spring-boot-starter-redistpl-plus.version>3.2.x.20260630-SNAPSHOT</spring-boot-starter-redistpl-plus.version>
                 <commons-io.version>2.22.0</commons-io.version>
                 <slf4j.version>2.0.18</slf4j.version>
     </properties>
