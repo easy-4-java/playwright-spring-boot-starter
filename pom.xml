@@ -13,7 +13,7 @@
     <groupId>io.github.hiwepy</groupId>
     <artifactId>playwright-spring-boot-starter</artifactId>
     <description>Spring Boot Starter For Playwright</description>
-    <version>2.4.x.20250513-SNAPSHOT</version>
+    <version>4.0.x.20260630-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/hiwepy/${project.artifactId}</url>
     <packaging>jar</packaging>
