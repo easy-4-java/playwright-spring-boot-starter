@@ -512,10 +512,10 @@
                 <version>${pdfbox.version}</version>
                 <scope>test</scope>
             </dependency>
-            <!-- Source: https://github.com/easy-4-java/spring-biz — easy4j spring-biz -->
+            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
             <dependency>
                 <groupId>io.github.easy4j</groupId>
-                <artifactId>spring-biz</artifactId>
+                <artifactId>spring-enhance</artifactId>
                 <version>${spring-biz.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
@@ -653,10 +653,10 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-        <!-- Source: https://github.com/easy-4-java/spring-biz — easy4j spring-biz -->
+        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
         <dependency>
             <groupId>io.github.easy4j</groupId>
-            <artifactId>spring-biz</artifactId>
+            <artifactId>spring-enhance</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
         <dependency>
