@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Configuration
 @ConditionalOnClass({ Playwright.class, PooledObjectFactory.class })

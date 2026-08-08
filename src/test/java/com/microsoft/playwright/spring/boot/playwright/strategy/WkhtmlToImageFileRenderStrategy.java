@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * 使用 Playwright 渲染引擎将 HTML 渲染为各种图像格式
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Slf4j
 public class WkhtmlToImageFileRenderStrategy extends WkhtmlToImageBufferRenderStrategy {

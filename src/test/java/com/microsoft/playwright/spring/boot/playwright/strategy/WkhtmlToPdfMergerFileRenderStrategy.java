@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 /**
  * Playwright 渲染引擎将 HTML 渲染为 PDF 和各种图像格式
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Slf4j
 public class WkhtmlToPdfMergerFileRenderStrategy extends WkhtmlToPdfMergerBufferRenderStrategy {
