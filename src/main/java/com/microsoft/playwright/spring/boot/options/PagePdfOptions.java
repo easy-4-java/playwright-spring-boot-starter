@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.Margin;
 import lombok.Data;
 import org.springframework.boot.context.properties.PropertyMapper;
+import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
 import java.nio.file.Path;
 
@@ -83,21 +84,21 @@ public class PagePdfOptions {
     public String width;
 
     public Page.PdfOptions toOptions(){
-        PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+        PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Page.PdfOptions options = new Page.PdfOptions();
-        map.from(this.getDisplayHeaderFooter()).whenNonNull().to(options::setDisplayHeaderFooter);
+        map.from(this.getDisplayHeaderFooter()).to(options::setDisplayHeaderFooter);
         map.from(this.getFooterTemplate()).whenHasText().to(options::setFooterTemplate);
         map.from(this.getFormat()).whenHasText().to(options::setFormat);
         map.from(this.getHeaderTemplate()).whenHasText().to(options::setHeaderTemplate);
         map.from(this.getHeight()).whenHasText().to(options::setHeight);
-        map.from(this.getLandscape()).whenNonNull().to(options::setLandscape);
-        map.from(this.getMargin()).whenNonNull().to(options::setMargin);
-        map.from(this.getOutline()).whenNonNull().to(options::setOutline);
+        map.from(this.getLandscape()).to(options::setLandscape);
+        map.from(this.getMargin()).to(options::setMargin);
+        map.from(this.getOutline()).to(options::setOutline);
         map.from(this.getPageRanges()).whenHasText().to(options::setPageRanges);
-        map.from(this.getPreferCssPageSize()).whenNonNull().to(options::setPreferCSSPageSize);
-        map.from(this.getPrintBackground()).whenNonNull().to(options::setPrintBackground);
-        map.from(this.getScale()).whenNonNull().to(options::setScale);
-        map.from(this.getTagged()).whenNonNull().to(options::setTagged);
+        map.from(this.getPreferCssPageSize()).to(options::setPreferCSSPageSize);
+        map.from(this.getPrintBackground()).to(options::setPrintBackground);
+        map.from(this.getScale()).to(options::setScale);
+        map.from(this.getTagged()).to(options::setTagged);
         map.from(this.getWidth()).whenHasText().to(options::setWidth);
         return options;
     };

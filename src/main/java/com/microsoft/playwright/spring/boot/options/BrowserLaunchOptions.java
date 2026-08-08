@@ -4,6 +4,7 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.options.Proxy;
 import lombok.Data;
 import org.springframework.boot.context.properties.PropertyMapper;
+import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 import org.springframework.util.CollectionUtils;
 
 import java.nio.file.Path;
@@ -102,25 +103,25 @@ public class BrowserLaunchOptions {
     public Path tracesDir;
 
     public BrowserType.LaunchOptions toOptions() {
-        PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+        PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
         map.from(this.getArgs()).when(args -> !CollectionUtils.isEmpty(args)).to(options::setArgs);
         map.from(this.getChannel()).whenHasText().to(options::setChannel);
-        map.from(this.getChromiumSandbox()).whenNonNull().to(options::setChromiumSandbox);
-        map.from(this.getDownloadsPath()).whenNonNull().to(options::setDownloadsPath);
+        map.from(this.getChromiumSandbox()).to(options::setChromiumSandbox);
+        map.from(this.getDownloadsPath()).to(options::setDownloadsPath);
         map.from(this.getEnv()).when(env -> !CollectionUtils.isEmpty(env)).to(options::setEnv);
-        map.from(this.getExecutablePath()).whenNonNull().to(options::setExecutablePath);
+        map.from(this.getExecutablePath()).to(options::setExecutablePath);
         map.from(this.getFirefoxUserPrefs()).when(firefoxUserPrefs -> !CollectionUtils.isEmpty(firefoxUserPrefs)).to(options::setFirefoxUserPrefs);
-        map.from(this.getHandleSighup()).whenNonNull().to(options::setHandleSIGHUP);
-        map.from(this.getHandleSigint()).whenNonNull().to(options::setHandleSIGINT);
-        map.from(this.getHandleSigterm()).whenNonNull().to(options::setHandleSIGTERM);
-        map.from(this.getHeadless()).whenNonNull().to(options::setHeadless);
-        map.from(this.getIgnoreAllDefaultArgs()).whenNonNull().to(options::setIgnoreAllDefaultArgs);
+        map.from(this.getHandleSighup()).to(options::setHandleSIGHUP);
+        map.from(this.getHandleSigint()).to(options::setHandleSIGINT);
+        map.from(this.getHandleSigterm()).to(options::setHandleSIGTERM);
+        map.from(this.getHeadless()).to(options::setHeadless);
+        map.from(this.getIgnoreAllDefaultArgs()).to(options::setIgnoreAllDefaultArgs);
         map.from(this.getIgnoreDefaultArgs()).when(ignoreDefaultArgs -> !CollectionUtils.isEmpty(ignoreDefaultArgs)).to(options::setIgnoreDefaultArgs);
-        map.from(this.getProxy()).whenNonNull().to(options::setProxy);
-        map.from(this.getSlowMo()).whenNonNull().to(options::setSlowMo);
-        map.from(this.getTimeout()).whenNonNull().to(options::setTimeout);
-        map.from(this.getTracesDir()).whenNonNull().to(options::setTracesDir);
+        map.from(this.getProxy()).to(options::setProxy);
+        map.from(this.getSlowMo()).to(options::setSlowMo);
+        map.from(this.getTimeout()).to(options::setTimeout);
+        map.from(this.getTracesDir()).to(options::setTracesDir);
         return options;
     }
 }

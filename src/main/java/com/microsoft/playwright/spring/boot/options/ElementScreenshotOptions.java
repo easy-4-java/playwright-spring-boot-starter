@@ -10,6 +10,7 @@ import com.microsoft.playwright.options.ScreenshotScale;
 import com.microsoft.playwright.options.ScreenshotType;
 import lombok.Data;
 import org.springframework.boot.context.properties.PropertyMapper;
+import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -80,18 +81,18 @@ public class ElementScreenshotOptions {
     public ScreenshotType type = ScreenshotType.PNG;
 
     public ElementHandle.ScreenshotOptions toOptions(){
-        PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+        PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         ElementHandle.ScreenshotOptions options = new ElementHandle.ScreenshotOptions();
-        map.from(this.getAnimations()).whenNonNull().to(options::setAnimations);
-        map.from(this.getCaret()).whenNonNull().to(options::setCaret);
-        map.from(this.getMask()).whenNonNull().to(options::setMask);
+        map.from(this.getAnimations()).to(options::setAnimations);
+        map.from(this.getCaret()).to(options::setCaret);
+        map.from(this.getMask()).to(options::setMask);
         map.from(this.getMaskColor()).whenHasText().to(options::setMaskColor);
-        map.from(this.getOmitBackground()).whenNonNull().to(options::setOmitBackground);
-        map.from(this.getPath()).whenNonNull().to(options::setPath);
+        map.from(this.getOmitBackground()).to(options::setOmitBackground);
+        map.from(this.getPath()).to(options::setPath);
         map.from(this.getQuality()).when((quality) -> Objects.nonNull(this.getType()) && this.getType() != ScreenshotType.PNG && Objects.nonNull(quality)).to(options::setQuality);
-        map.from(this.getScale()).whenNonNull().to(options::setScale);
-        map.from(this.getTimeout()).whenNonNull().to(options::setTimeout);
-        map.from(this.getType()).whenNonNull().to(options::setType);
+        map.from(this.getScale()).to(options::setScale);
+        map.from(this.getTimeout()).to(options::setTimeout);
+        map.from(this.getType()).to(options::setType);
         return options;
     };
 

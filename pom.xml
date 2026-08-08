@@ -10,12 +10,12 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>io.github.hiwepy</groupId>
+    <groupId>io.github.easy4j</groupId>
     <artifactId>playwright-spring-boot-starter</artifactId>
     <description>Spring Boot Starter For Playwright</description>
     <version>4.0.x.20260630-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/hiwepy/${project.artifactId}</url>
+    <url>https://github.com/easy-4-java/${project.artifactId}</url>
     <packaging>jar</packaging>
 
     <licenses>
@@ -28,9 +28,9 @@
 
     <scm>
 
-        <connection>scm:git:https://github.com/hiwepy/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:https://github.com/hiwepy/${project.artifactId}.git</developerConnection>
-        <url>https://github.com/hiwepy/${project.artifactId}</url>
+        <connection>scm:git:https://github.com/easy-4-java/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:https://github.com/easy-4-java/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/easy-4-java/${project.artifactId}</url>
         <tag>${project.artifactId}</tag>
     </scm>
 
@@ -48,16 +48,14 @@
 
     <distributionManagement>
 
-        <snapshotRepository>
-            <id>ossrh</id>
-            <name>Maven Snapshots Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <name>Maven Central Staging Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>2624322-release-6F6h6R</id>
+            <url>https://packages.aliyun.com/6927b116e6c3e0425dbdf60d/maven/2624322-release-6f6h6r</url>
         </repository>
+        <snapshotRepository>
+            <id>2624322-snapshot-3EoOv3</id>
+            <url>https://packages.aliyun.com/6927b116e6c3e0425dbdf60d/maven/2624322-snapshot-3eoov3</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <build>
@@ -493,6 +491,8 @@
         <hutool.version>5.8.32</hutool.version>
         <pdfbox.version>3.0.3</pdfbox.version>
         <playwright.version>1.48.0</playwright.version>
+        <!-- playwright-extension component version that this starter depends on -->
+        <playwright-extension.version>3.0.x.20260630-SNAPSHOT</playwright-extension.version>
         <spring-framework.version>5.2.25.RELEASE</spring-framework.version>
         <spring-biz.version>1.1.5.RELEASE</spring-biz.version>
         <snakeyaml.version>1.33</snakeyaml.version>
@@ -509,6 +509,12 @@
                 <groupId>com.microsoft.playwright</groupId>
                 <artifactId>playwright</artifactId>
                 <version>${playwright.version}</version>
+            </dependency>
+            <!-- playwright-extension: extension library wrapping Microsoft Playwright -->
+            <dependency>
+                <groupId>io.github.easy4j</groupId>
+                <artifactId>playwright-extension-core</artifactId>
+                <version>${playwright-extension.version}</version>
             </dependency>
             <!-- For Commons Exec -->
             <dependency>
@@ -575,12 +581,14 @@
                 <version>${pdfbox.version}</version>
                 <scope>test</scope>
             </dependency>
-            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
+            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz (removed: legacy artifact not available) -->
+            <!--
             <dependency>
                 <groupId>io.github.hiwepy</groupId>
                 <artifactId>spring-enhance</artifactId>
                 <version>${spring-biz.version}</version>
             </dependency>
+            -->
             <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -624,11 +632,11 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Java Servlet API -->
+        <!-- Java Servlet API (provided by spring-boot-starter in 4.x via jakarta; using jakarta) -->
         <!-- For Servlet Api -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -680,6 +688,11 @@
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
         </dependency>
+        <!-- playwright-extension: extension library wrapping Microsoft Playwright -->
+        <dependency>
+            <groupId>io.github.easy4j</groupId>
+            <artifactId>playwright-extension-core</artifactId>
+        </dependency>
         <!-- Apache Commons Exec -->
         <!-- For Commons Exec -->
         <dependency>
@@ -702,11 +715,13 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz -->
+        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz (removed: legacy artifact not available) -->
+        <!--
         <dependency>
             <groupId>io.github.hiwepy</groupId>
             <artifactId>spring-enhance</artifactId>
         </dependency>
+        -->
         <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -757,13 +772,15 @@
             <scope>test</scope>
         </dependency>
         <!-- For Redis -->
-        <!-- Source: https://github.com/easy-4-java/redistpl-plus-spring-boot-starter — easy4j redistpl-plus-spring-boot-starter -->
+        <!-- Source: https://github.com/easy-4-java/redistpl-plus-spring-boot-starter — easy4j redistpl-plus-spring-boot-starter (removed: legacy artifact not available) -->
+        <!--
         <dependency>
             <groupId>io.github.hiwepy</groupId>
             <artifactId>redistpl-plus-spring-boot-starter</artifactId>
             <version>${redistpl-plus-spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
+        -->
 
     </dependencies>
 

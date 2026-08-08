@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import lombok.Data;
 import org.springframework.boot.context.properties.PropertyMapper;
+import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
 @Data
 public class PageWaitForSelectorOptions {
@@ -35,11 +36,11 @@ public class PageWaitForSelectorOptions {
     public Double timeout = 30 * 1000.0;
 
     public Page.WaitForSelectorOptions toOptions(){
-        PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+        PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Page.WaitForSelectorOptions options = new Page.WaitForSelectorOptions();
-        map.from(this.getTimeout()).whenNonNull().to(options::setTimeout);
-        map.from(this.getState()).whenNonNull().to(options::setState);
-        map.from(this.getStrict()).whenNonNull().to(options::setStrict);
+        map.from(this.getTimeout()).to(options::setTimeout);
+        map.from(this.getState()).to(options::setState);
+        map.from(this.getStrict()).to(options::setStrict);
         return options;
     };
 
