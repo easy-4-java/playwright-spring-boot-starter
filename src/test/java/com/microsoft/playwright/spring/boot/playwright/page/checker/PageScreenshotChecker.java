@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * 页面截图检查器
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 public interface PageScreenshotChecker extends Ordered, Comparable<PageScreenshotChecker> {
 
