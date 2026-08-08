@@ -5,7 +5,7 @@ import lombok.Data;
 import java.awt.image.BufferedImage;
 
 /**
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Data
 public class ImagePixelCache {
