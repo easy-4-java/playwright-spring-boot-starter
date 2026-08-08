@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Playwright 渲染引擎自动配置
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Configuration
 @EnableConfigurationProperties(PlaywrightRenderProperties.class)
