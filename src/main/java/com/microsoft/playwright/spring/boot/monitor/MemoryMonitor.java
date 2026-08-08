@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Slf4j
 public class MemoryMonitor {
