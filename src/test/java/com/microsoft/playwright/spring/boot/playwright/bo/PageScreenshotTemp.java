@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 截图缓存信息
- * @author wandl
+ * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Accessors(chain = true)
 @Data
