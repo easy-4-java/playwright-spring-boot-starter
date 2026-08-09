@@ -8,6 +8,15 @@ import lombok.Data;
 import org.springframework.boot.context.properties.PropertyMapper;
 import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
+/**
+ * Configuration properties for navigating a Playwright page to a URL. <p>Holds the
+ * navigation options (referer, timeout and the load-completion state) so they can be
+ * bound from Spring configuration and mapped to a {@link Page.NavigateOptions}
+ * instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class PageNavigateOptions {
 
@@ -35,6 +44,11 @@ public class PageNavigateOptions {
      */
     public WaitUntilState waitUntil = WaitUntilState.NETWORKIDLE;
 
+    /**
+     * Converts these configuration properties into a {@link Page.NavigateOptions}
+     * instance, mapping only non-{@code null} values.
+     * @return the equivalent Playwright navigation options
+     */
     public Page.NavigateOptions toOptions(){
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Page.NavigateOptions options = new Page.NavigateOptions();

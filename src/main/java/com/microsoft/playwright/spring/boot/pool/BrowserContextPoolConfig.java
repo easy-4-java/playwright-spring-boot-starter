@@ -8,6 +8,16 @@ import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
 import java.time.Duration;
 
+/**
+ * Configuration properties for the pooled {@link BrowserContext} instances. <p>Wraps
+ * the Commons-Pool2 {@link GenericObjectPoolConfig} tuning parameters (exhaustion,
+ * eviction, fairness, capacity and validation behaviour) so they can be bound from
+ * Spring configuration and mapped to a
+ * {@link GenericObjectPoolConfig}&lt;{@link BrowserContext}&gt; instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class BrowserContextPoolConfig {
 
@@ -45,6 +55,12 @@ public class BrowserContextPoolConfig {
 
     private boolean testWhileIdle = GenericObjectPoolConfig.DEFAULT_TEST_WHILE_IDLE;
 
+    /**
+     * Converts these configuration properties into a
+     * {@link GenericObjectPoolConfig}&lt;{@link BrowserContext}&gt; instance, mapping
+     * only non-{@code null} values.
+     * @return the equivalent Commons-Pool2 configuration
+     */
     public GenericObjectPoolConfig<BrowserContext> toPoolConfig(){
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         GenericObjectPoolConfig<BrowserContext> poolConfig = new GenericObjectPoolConfig<>();

@@ -9,6 +9,15 @@ import lombok.Data;
 import org.springframework.boot.context.properties.PropertyMapper;
 import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
+/**
+ * Configuration properties for emulating media features on a Playwright page. <p>Holds
+ * the emulation options (CSS media type, color scheme, forced colors and reduced
+ * motion) so they can be bound from Spring configuration and mapped to a
+ * {@link Page.EmulateMediaOptions} instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class PageEmulateMediaOptions {
 
@@ -33,6 +42,11 @@ public class PageEmulateMediaOptions {
      */
     public ReducedMotion reducedMotion;
 
+    /**
+     * Converts these configuration properties into a {@link Page.EmulateMediaOptions}
+     * instance, mapping only non-{@code null} values.
+     * @return the equivalent Playwright emulate-media options
+     */
     public Page.EmulateMediaOptions toOptions() {
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Page.EmulateMediaOptions options = new Page.EmulateMediaOptions();

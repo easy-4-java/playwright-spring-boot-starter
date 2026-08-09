@@ -22,39 +22,104 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Utility helpers for creating thread pools, thread factories and for performing
+ * graceful shutdown of threads and executors.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Slf4j
 public final class ThreadUtils {
 
+    /**
+     * Creates a {@link ThreadPoolExecutor} with a named, optionally-daemon thread
+     * factory.
+     * @param corePoolSize    the number of threads to keep in the pool even when idle
+     * @param maximumPoolSize the maximum number of threads ever allowed in the pool
+     * @param keepAliveTime   the maximum time an idle thread waits for new tasks
+     * @param unit            the time unit for {@code keepAliveTime}
+     * @param workQueue       the queue used for holding tasks before they are executed
+     * @param processName     the base name used for created threads
+     * @param isDaemon        whether created threads should be daemon threads
+     * @return the configured thread-pool executor
+     */
     public static ExecutorService newThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
                                                         TimeUnit unit, BlockingQueue<Runnable> workQueue, String processName, boolean isDaemon) {
         return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, newThreadFactory(processName, isDaemon));
     }
 
+    /**
+     * Creates a single-thread executor whose worker uses the given process name.
+     * @param processName the base name used for the created thread
+     * @param isDaemon    whether the created thread should be a daemon thread
+     * @return the single-thread executor
+     */
     public static ExecutorService newSingleThreadExecutor(String processName, boolean isDaemon) {
         return Executors.newSingleThreadExecutor(newThreadFactory(processName, isDaemon));
     }
 
+    /**
+     * Creates a single-thread scheduled executor whose worker uses the given process
+     * name.
+     * @param processName the base name used for the created thread
+     * @param isDaemon    whether the created thread should be a daemon thread
+     * @return the single-thread scheduled executor
+     */
     public static ScheduledExecutorService newSingleThreadScheduledExecutor(String processName, boolean isDaemon) {
         return Executors.newSingleThreadScheduledExecutor(newThreadFactory(processName, isDaemon));
     }
 
+    /**
+     * Creates a fixed-size scheduled thread pool whose workers use the given process
+     * name.
+     * @param nThreads    the number of threads in the pool
+     * @param processName the base name used for created threads
+     * @param isDaemon    whether created threads should be daemon threads
+     * @return the fixed-size scheduled thread pool
+     */
     public static ScheduledExecutorService newFixedThreadScheduledPool(int nThreads, String processName,
                                                                        boolean isDaemon) {
         return Executors.newScheduledThreadPool(nThreads, newThreadFactory(processName, isDaemon));
     }
 
+    /**
+     * Creates a thread factory that prefixes created threads with {@code "Remoting-"}
+     * followed by the supplied process name.
+     * @param processName the base name used for created threads
+     * @param isDaemon    whether created threads should be daemon threads
+     * @return the configured thread factory
+     */
     public static ThreadFactory newThreadFactory(String processName, boolean isDaemon) {
         return newGenericThreadFactory("Remoting-" + processName, isDaemon);
     }
 
+    /**
+     * Creates a non-daemon thread factory using the given process name.
+     * @param processName the base name used for created threads
+     * @return the configured thread factory
+     */
     public static ThreadFactory newGenericThreadFactory(String processName) {
         return newGenericThreadFactory(processName, false);
     }
 
+    /**
+     * Creates a non-daemon thread factory using the given process name and thread count.
+     * @param processName the base name used for created threads
+     * @param threads     the pool size embedded into each thread name
+     * @return the configured thread factory
+     */
     public static ThreadFactory newGenericThreadFactory(String processName, int threads) {
         return newGenericThreadFactory(processName, threads, false);
     }
 
+    /**
+     * Creates a thread factory that numbers created threads sequentially using the
+     * supplied process name.
+     * @param processName the base name used for created threads
+     * @param isDaemon    whether created threads should be daemon threads
+     * @return the configured thread factory
+     */
     public static ThreadFactory newGenericThreadFactory(final String processName, final boolean isDaemon) {
         return new ThreadFactory() {
             private AtomicInteger threadIndex = new AtomicInteger(0);
@@ -68,6 +133,14 @@ public final class ThreadUtils {
         };
     }
 
+    /**
+     * Creates a thread factory that numbers created threads sequentially using the
+     * supplied process name and pool size.
+     * @param processName the base name used for created threads
+     * @param threads     the pool size embedded into each thread name
+     * @param isDaemon    whether created threads should be daemon threads
+     * @return the configured thread factory
+     */
     public static ThreadFactory newGenericThreadFactory(final String processName, final int threads,
                                                         final boolean isDaemon) {
         return new ThreadFactory() {

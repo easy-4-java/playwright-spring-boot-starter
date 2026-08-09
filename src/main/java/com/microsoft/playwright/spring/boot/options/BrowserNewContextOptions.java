@@ -13,6 +13,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Configuration properties for creating a new (non-persistent) browser context. <p>Holds
+ * the context options together with resource-management limits (retry attempts, retry
+ * delay and cleanup timeout) so they can be bound from Spring configuration and mapped
+ * to a {@link Browser.NewContextOptions} instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class BrowserNewContextOptions {
 
@@ -223,6 +232,11 @@ public class BrowserNewContextOptions {
      */
     public ViewportSize viewportSize;
 
+    /**
+     * Converts these configuration properties into a {@link Browser.NewContextOptions}
+     * instance, mapping only non-{@code null} and non-empty values.
+     * @return the equivalent Playwright new-context options
+     */
     public Browser.NewContextOptions toOptions(){
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Browser.NewContextOptions options = new Browser.NewContextOptions();

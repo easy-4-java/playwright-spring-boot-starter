@@ -13,6 +13,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Configuration properties for capturing a screenshot of a Playwright page. <p>Holds the
+ * screenshot options (clip, full page, quality, type, masking, etc.) so they can be
+ * bound from Spring configuration and mapped to a {@link Page.ScreenshotOptions}
+ * instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class PageScreenshotOptions {
 
@@ -86,6 +95,12 @@ public class PageScreenshotOptions {
      */
     public ScreenshotType type = ScreenshotType.PNG;
 
+    /**
+     * Converts these configuration properties into a {@link Page.ScreenshotOptions}
+     * instance, mapping only non-{@code null} values (quality is only applied for
+     * non-PNG types).
+     * @return the equivalent Playwright screenshot options
+     */
     public Page.ScreenshotOptions toOptions(){
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Page.ScreenshotOptions options = new Page.ScreenshotOptions();

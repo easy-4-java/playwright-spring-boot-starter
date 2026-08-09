@@ -13,7 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Configuration properties for launching a persistent browser context backed by a user
+ * data directory. <p>Holds the persistent-context launch options together with
+ * resource-management limits (maximum context count, user-data-directory size and
+ * usage timeout, retry and cleanup behaviour) so they can be bound from Spring
+ * configuration and mapped to a {@link BrowserType.LaunchPersistentContextOptions}
+ * instance.</p>
+ *
  * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @Data
 public class BrowserLaunchPersistentContextOptions {
@@ -336,6 +344,12 @@ public class BrowserLaunchPersistentContextOptions {
      */
     public ViewportSize viewportSize;
 
+    /**
+     * Converts these configuration properties into a
+     * {@link BrowserType.LaunchPersistentContextOptions} instance, mapping only
+     * non-{@code null} and non-empty values.
+     * @return the equivalent Playwright launch-persistent-context options
+     */
     public BrowserType.LaunchPersistentContextOptions toOptions() {
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions();

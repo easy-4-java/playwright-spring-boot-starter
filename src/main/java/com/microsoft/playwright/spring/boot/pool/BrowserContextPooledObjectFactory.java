@@ -28,11 +28,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
+/**
+ * Commons-Pool2 factory that creates, activates, validates, passivates and destroys
+ * pooled {@link BrowserContext} instances. <p>When sessions are isolated a fresh,
+ * non-persistent context is created for each object; otherwise persistent contexts
+ * backed by rotating user-data directories are reused. The factory also tracks the
+ * Playwright instance and on-disk directory associated with every context so that they
+ * can be cleaned up on destroy, on browser disconnect and on container shutdown.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Slf4j
 public class BrowserContextPooledObjectFactory implements PooledObjectFactory<BrowserContext>, DisposableBean {
 
     /**
-     * Playwright管理容器
+     * Container tracking the {@link Playwright} instance owning each pooled context.
      */
     private static final Map<BrowserContext, Playwright> PLAYWRIGHT_MAP = new ConcurrentHashMap<>();
     private static final Map<BrowserContext, Path> CONTEXT_DIR_MAP = new ConcurrentHashMap<>();
@@ -91,6 +102,12 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     };
 
 
+    /**
+     * Creates a new factory bound to the supplied Playwright configuration. When
+     * persistent (non-isolated) mode is enabled, the configured user-data directories
+     * are pre-allocated up-front.
+     * @param playwrightProperties the Playwright configuration properties
+     */
     public BrowserContextPooledObjectFactory(PlaywrightProperties playwrightProperties) {
         this.playwrightProperties = playwrightProperties;
         // 在构造函数中预分配目录
@@ -103,10 +120,10 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 1、从池中取出一个池中物（playwright）时调用
+     * Invoked when a pooled {@link BrowserContext} is borrowed from the pool, clearing
+     * its cookies before reuse.
      * @param p a {@code PooledObject} wrapping the instance to be activated
-     *
-     * @throws Exception if there is a problem activating {@code obj}
+     * @throws Exception if there is a problem activating the object
      */
     @Override
     public void activateObject(PooledObject<BrowserContext> p) throws Exception {
@@ -122,12 +139,12 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 2、检测对象是否"有效";Pool中不能保存无效的"对象",因此"后台检测线程"会周期性的检测Pool中"对象"的有效性,如果对象无效则会导致此对象从Pool中移除,并destroy;此外在调用者从Pool获取一个"对象"时,也会检测"对象"的有效性,确保不能讲"无效"的对象输出给调用者;当调用者使用完毕将"对象归还"到Pool时,仍然会检测对象的有效性.所谓有效性,就是此"对象"的状态是否符合预期,是否可以对调用者直接使用;如果对象是Socket,那么它的有效性就是socket的通道是否畅通/阻塞是否超时等.
-     * 这里若要检测，需要在PoolConfig中配置检测项目。
-     * true：检测正常，符合预期；false：异常，销毁对象
+     * Validates a pooled {@link BrowserContext} by ensuring the wrapped object is
+     * non-{@code null}. Validation runs periodically on idle objects, on borrow and on
+     * return; invalid objects are dropped from the pool.
      * @param p a {@code PooledObject} wrapping the instance to be validated
-     *
-     * @return {@code false} if this object is not currently valid and should be dropped from the pool, {@code true} otherwise.
+     * @return {@code false} if this object is not currently valid and should be dropped
+     *         from the pool, {@code true} otherwise
      */
     @Override
     public boolean validateObject(PooledObject<BrowserContext> p) {
@@ -139,7 +156,9 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 3、创建池中物（playwright）
+     * Creates a new pooled {@link BrowserContext}. In isolated mode a non-persistent
+     * context is created; otherwise a persistent context backed by the next available
+     * user-data directory is launched.
      * @return a new instance that can be served by the pool
      */
     @Override
@@ -199,8 +218,9 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 预分配目录
-     * @param userDataRootDir 用户数据根目录
+     * Pre-allocates the configured number of context directories under the user-data
+     * root directory.
+     * @param userDataRootDir the root user-data directory
      */
     private void preallocateContextDirs(File userDataRootDir) {
         dirCreationLock.lock();
@@ -220,9 +240,9 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 获取目录大小
-     * @param dir 要检查的目录
-     * @return 目录大小
+     * Computes the total size in bytes of the regular files within the given directory.
+     * @param dir the directory to inspect
+     * @return the directory size in bytes (0 if it cannot be walked)
      */
     private long getDirectorySize(Path dir) {
         try {
@@ -244,8 +264,9 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 更新目录大小
-     * @param dir 要更新的目录
+     * Recomputes and records the size of the given context directory, warning when it
+     * exceeds the configured maximum.
+     * @param dir the directory whose size is updated
      */
     private void updateDirectorySize(Path dir) {
         long size = getDirectorySize(dir);
@@ -256,9 +277,10 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 获取下一个可用的上下文目录
-     * @param userDataRootDir 用户数据根目录
-     * @return 新的上下文目录路径
+     * Returns the next available context directory, cleaning up stale directories first
+     * and then selecting the least-recently-used candidate.
+     * @param userDataRootDir the root user-data directory
+     * @return the path of the context directory to use
      */
     private Path getNextContextDir(File userDataRootDir) {
         dirCreationLock.lock();
@@ -274,9 +296,10 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 查找使用最少的目录
-     * @param userDataRootDir 用户数据根目录
-     * @return 使用最少的目录路径
+     * Selects the least-recently-used, currently-idle context directory, weighting
+     * last-use time against directory size. A new directory is created if none is free.
+     * @param userDataRootDir the root user-data directory
+     * @return the path of the least-used directory
      */
     private Path findLeastUsedDir(File userDataRootDir) {
         return CONTEXT_DIR_LAST_USED.entrySet().stream()
@@ -304,8 +327,8 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 清理旧的上下文目录
-     * @param userDataRootDir 用户数据根目录
+     * Deletes idle context directories that exceed the size or usage-time limit.
+     * @param userDataRootDir the root user-data directory
      */
     private void cleanupOldContextDirs(File userDataRootDir) {
         File[] contextDirs = userDataRootDir.listFiles((dir, name) -> name.startsWith(CONTEXT_DIR_PREFIX));
@@ -334,9 +357,10 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 检查目录是否正在使用
-     * @param dir 要检查的目录
-     * @return 如果目录正在使用返回true，否则返回false
+     * Returns whether the given context directory is currently idle (neither bound to an
+     * active context nor used within the usage-timeout window).
+     * @param dir the directory to check
+     * @return {@code true} if the directory is not in use, {@code false} otherwise
      */
     private boolean isDirectoryNotUsed(Path dir) {
         // 检查目录是否在CONTEXT_DIR_MAP中
@@ -355,10 +379,10 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
     }
 
     /**
-     * 归还一个池中物（playwright）时调用，不应该activateObject冲突
+     * Invoked when a pooled {@link BrowserContext} is returned to the pool, clearing
+     * session storage, cookies and pages and refreshing the directory-size bookkeeping.
      * @param p a {@code PooledObject} wrapping the instance to be passivated
-     *
-     * @throws Exception if there is a problem passivating {@code obj}
+     * @throws Exception if there is a problem passivating the object
      */
     @Override
     public void passivateObject(PooledObject<BrowserContext> p) throws Exception {
@@ -408,10 +432,11 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
 
 
     /**
-     * 销毁一个池中物（playwright）时调用
+     * Invoked when a pooled {@link BrowserContext} is destroyed, releasing the browser
+     * context, the owning Playwright instance and its on-disk directory. The cleanup is
+     * retried up to the configured number of attempts.
      * @param p a {@code PooledObject} wrapping the instance to be destroyed
-     *
-     * @throws Exception if there is a problem destroying {@code obj}
+     * @throws Exception if there is a problem destroying the object
      */
     @Override
     public void destroyObject(PooledObject<BrowserContext> p) throws Exception {
@@ -480,6 +505,11 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
         log.error("Failed to cleanup resources after {} attempts", this.getMaximumRetryAttempts(), lastException);
     }
 
+    /**
+     * Invoked by the Spring container on shutdown to close every remaining browser
+     * context and its owning Playwright instance.
+     * @throws Exception if an error occurs while destroying resources
+     */
     @Override
     public void destroy() throws Exception {
         PLAYWRIGHT_MAP.forEach((browserContext, playwright) -> {

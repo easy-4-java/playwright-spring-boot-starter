@@ -11,6 +11,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Configuration properties for launching a new browser instance with Playwright. <p>Holds
+ * the launch-time options (command-line arguments, channel, proxy, headless mode,
+ * timeouts, etc.) so they can be bound from Spring configuration and mapped to a
+ * {@link BrowserType.LaunchOptions} instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class BrowserLaunchOptions {
 
@@ -102,6 +111,11 @@ public class BrowserLaunchOptions {
      */
     public Path tracesDir;
 
+    /**
+     * Converts these configuration properties into a {@link BrowserType.LaunchOptions}
+     * instance, mapping only non-{@code null} and non-empty values.
+     * @return the equivalent Playwright launch options
+     */
     public BrowserType.LaunchOptions toOptions() {
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();

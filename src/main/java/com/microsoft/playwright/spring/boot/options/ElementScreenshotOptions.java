@@ -16,6 +16,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Configuration properties for capturing a screenshot of a single element. <p>Holds the
+ * screenshot options (quality, type, masking, etc.) so they can be bound from Spring
+ * configuration and mapped to an {@link ElementHandle.ScreenshotOptions} instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class ElementScreenshotOptions {
 
@@ -80,6 +88,12 @@ public class ElementScreenshotOptions {
      */
     public ScreenshotType type = ScreenshotType.PNG;
 
+    /**
+     * Converts these configuration properties into an
+     * {@link ElementHandle.ScreenshotOptions} instance, mapping only non-{@code null}
+     * values (quality is only applied for non-PNG types).
+     * @return the equivalent Playwright element-screenshot options
+     */
     public ElementHandle.ScreenshotOptions toOptions(){
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         ElementHandle.ScreenshotOptions options = new ElementHandle.ScreenshotOptions();

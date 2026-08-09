@@ -9,6 +9,15 @@ import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
 import java.nio.file.Path;
 
+/**
+ * Configuration properties for rendering a Playwright page as a PDF document. <p>Holds
+ * the PDF options (paper size, orientation, margins, header/footer templates, etc.) so
+ * they can be bound from Spring configuration and mapped to a {@link Page.PdfOptions}
+ * instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class PagePdfOptions {
 
@@ -83,6 +92,11 @@ public class PagePdfOptions {
      */
     public String width;
 
+    /**
+     * Converts these configuration properties into a {@link Page.PdfOptions} instance,
+     * mapping only non-{@code null} values.
+     * @return the equivalent Playwright PDF options
+     */
     public Page.PdfOptions toOptions(){
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Page.PdfOptions options = new Page.PdfOptions();

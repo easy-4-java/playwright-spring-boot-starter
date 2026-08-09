@@ -7,6 +7,15 @@ import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
 import java.util.Map;
 
+/**
+ * Configuration properties for connecting to an existing browser instance over the
+ * Playwright CDP/web-socket protocol. <p>Wraps the connection-related options (extra
+ * headers, slow-mo and connection timeout) so that they can be bound from Spring
+ * configuration and mapped to a {@link BrowserType.ConnectOptions} instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class BrowserConnectOptions {
 
@@ -24,6 +33,11 @@ public class BrowserConnectOptions {
      */
     public Double timeout = 0.0;
 
+    /**
+     * Converts these configuration properties into a {@link BrowserType.ConnectOptions}
+     * instance, mapping only non-{@code null} values.
+     * @return the equivalent Playwright connect options
+     */
     public BrowserType.ConnectOptions toOptions() {
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         BrowserType.ConnectOptions options = new BrowserType.ConnectOptions();

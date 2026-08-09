@@ -7,6 +7,14 @@ import lombok.Data;
 import org.springframework.boot.context.properties.PropertyMapper;
 import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
 
+/**
+ * Configuration properties for waiting on an element matched by a selector. <p>Holds the
+ * wait options (target state, strict matching and timeout) so they can be bound from
+ * Spring configuration and mapped to a {@link Page.WaitForSelectorOptions} instance.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Data
 public class PageWaitForSelectorOptions {
 
@@ -35,6 +43,11 @@ public class PageWaitForSelectorOptions {
      */
     public Double timeout = 30 * 1000.0;
 
+    /**
+     * Converts these configuration properties into a {@link Page.WaitForSelectorOptions}
+     * instance, mapping only non-{@code null} values.
+     * @return the equivalent Playwright wait-for-selector options
+     */
     public Page.WaitForSelectorOptions toOptions(){
         PropertyMapper map = PropertyMapperCompat.alwaysApplyingWhenNonNull();
         Page.WaitForSelectorOptions options = new Page.WaitForSelectorOptions();
