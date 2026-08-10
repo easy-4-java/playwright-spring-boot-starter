@@ -34,7 +34,7 @@ import com.microsoft.playwright.spring.boot.properties.PropertyMapperCompat;
  * PropertyMapperCompat.whenNonNull(src).to(options::setFoo);
  * }</pre>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 4.0.0
  */
 public final class PropertyMapperCompat {
