@@ -11,7 +11,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  * A Commons-Pool2 object pool that recycles {@link BrowserContext} instances, exposing
  * the standard {@link GenericObjectPool} constructors.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Slf4j

@@ -10,7 +10,7 @@ import java.util.Objects;
  * Runnable that lazily warms up a {@link BrowserContextPool} on application start,
  * triggering browser installation and pool preparation.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Slf4j

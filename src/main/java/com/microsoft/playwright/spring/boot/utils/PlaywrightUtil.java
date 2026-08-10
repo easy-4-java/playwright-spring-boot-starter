@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * instances (thread-local lifecycle, browser launch, cookie/localStorage handling,
  * slider drag, page-load waiting, screenshot capture and cleanup).
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Slf4j

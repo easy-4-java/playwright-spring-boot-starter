@@ -21,7 +21,7 @@ import java.util.Objects;
  * screenshot options (quality, type, masking, etc.) so they can be bound from Spring
  * configuration and mapped to an {@link ElementHandle.ScreenshotOptions} instance.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Data

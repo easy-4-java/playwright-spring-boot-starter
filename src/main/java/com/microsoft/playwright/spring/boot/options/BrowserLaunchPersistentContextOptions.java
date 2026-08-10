@@ -20,7 +20,7 @@ import java.util.Map;
  * configuration and mapped to a {@link BrowserType.LaunchPersistentContextOptions}
  * instance.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Data

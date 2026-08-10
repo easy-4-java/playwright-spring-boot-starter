@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * Playwright instance and on-disk directory associated with every context so that they
  * can be cleaned up on destroy, on browser disconnect and on container shutdown.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Slf4j

@@ -3,7 +3,7 @@ package com.microsoft.playwright.spring.boot.utils;
 /**
  * Utility helpers for registering and naming JMX (Java Management Extensions) beans.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class JmxBeanUtils {
