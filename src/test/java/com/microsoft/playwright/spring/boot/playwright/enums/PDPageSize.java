@@ -5,7 +5,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 /**
  * PDF 页面大小，LETTER, LEGAL, A0, A1, A2, A3, A4, A5, A6
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public enum PDPageSize {
 
