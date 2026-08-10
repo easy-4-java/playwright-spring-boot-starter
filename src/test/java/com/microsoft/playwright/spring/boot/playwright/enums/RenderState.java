@@ -4,7 +4,7 @@ import lombok.Getter;
 
 /**
  * 渲染状态
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 @Getter
 public enum RenderState {
