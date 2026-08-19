@@ -7,6 +7,12 @@ import org.springframework.scheduling.annotation.Scheduled;
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 @Slf4j
+/**
+ * <p>MemoryMonitor implementation.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class MemoryMonitor {
 
     private final double memoryThreshold;

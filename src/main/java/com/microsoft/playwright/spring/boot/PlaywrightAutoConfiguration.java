@@ -23,6 +23,12 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass({ Playwright.class, PooledObjectFactory.class })
 @EnableConfigurationProperties(PlaywrightProperties.class)
 @Slf4j
+/**
+ * <p>Spring Boot auto-configuration for Playwright.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class PlaywrightAutoConfiguration {
 
     @Bean

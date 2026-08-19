@@ -31,6 +31,12 @@ import java.util.function.Function;
  */
 @ConfigurationProperties(PlaywrightProperties.PREFIX)
 @Data
+/**
+ * <p>Configuration properties for Playwright.</p>
+ *
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class PlaywrightProperties {
 
 	// 85% 内存使用率阈值
