@@ -1,41 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.1.0-M4</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>io.github.easy4j</groupId>
     <artifactId>playwright-spring-boot-starter</artifactId>
-    <description>Spring Boot Starter For Playwright</description>
     <version>4.1.x.20260630-SNAPSHOT</version>
-    <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/easy-4-java/${project.artifactId}</url>
     <packaging>jar</packaging>
 
-    <licenses>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Spring Boot Starter For Playwright</description>
+    <url>https://github.com/easy-4-java/${project.artifactId}</url>
 
+    <!-- 开源协议采用 Apache 2.0 协议 -->
+    <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
+    <!-- 源码仓库（SCM）信息 -->
     <scm>
-
         <connection>scm:git:https://github.com/easy-4-java/${project.artifactId}.git</connection>
         <developerConnection>scm:git:https://github.com/easy-4-java/${project.artifactId}.git</developerConnection>
         <url>https://github.com/easy-4-java/${project.artifactId}</url>
         <tag>${project.artifactId}</tag>
     </scm>
 
+    <!-- 开发者信息 -->
     <developers>
-
         <developer>
             <name>wandl</name>
             <email>hiwepy@gmail.com</email>
@@ -46,20 +48,365 @@
         </developer>
     </developers>
 
-    <distributionManagement>
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.version>3.0</maven.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Third-Party Dependencies -->
+        <!-- Dependency versions -->
+        <commons-exec.version>1.4.0</commons-exec.version>
+        <commons-io.version>2.17.0</commons-io.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-logging.version>1.3.4</commons-logging.version>
+        <commons-pool2.version>2.13.0</commons-pool2.version>
+        <fastjson2.version>2.0.56</fastjson2.version>
+        <gson.version>2.8.9</gson.version>
+        <guava.version>33.4.0-jre</guava.version>
+        <hutool.version>5.8.32</hutool.version>
+        <pdfbox.version>3.0.3</pdfbox.version>
+        <!-- playwright-extension component version that this starter depends on -->
+        <playwright-extension.version>3.0.x.20260630-SNAPSHOT</playwright-extension.version>
+        <playwright.version>1.48.0</playwright.version>
+        <redistpl-plus-spring-boot-starter.version>3.0.x.20260630-SNAPSHOT</redistpl-plus-spring-boot-starter.version>
+        <snakeyaml.version>1.33</snakeyaml.version>
+        <spring-biz.version>1.1.5.RELEASE</spring-biz.version>
+        <thumbnailator.version>0.4.19</thumbnailator.version>
+        <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
+        <!-- Maven Plugin Dependencies -->
+        <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+        <maven-central-publishing-plugin.version>0.11.0</maven-central-publishing-plugin.version>
+        <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.8.0</maven-dependency-plugin.version>
+        <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+        <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0</maven-failsafe-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <maven-help-plugin.version>3.5.0</maven-help-plugin.version>
+        <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
+        <maven-invoker-plugin.version>3.8.0</maven-invoker-plugin.version>
+        <maven-jacoco-plugin.version>0.8.15</maven-jacoco-plugin.version>
+        <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+        <maven-nexus-staging-plugin.version>1.7.0</maven-nexus-staging-plugin.version>
+        <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
+        <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+    </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
+            <dependency>
+                <groupId>com.microsoft.playwright</groupId>
+                <artifactId>playwright</artifactId>
+                <version>${playwright.version}</version>
+            </dependency>
+            <!-- playwright-extension: extension library wrapping Microsoft Playwright -->
+            <dependency>
+                <groupId>io.github.easy4j</groupId>
+                <artifactId>playwright-extension-core</artifactId>
+                <version>${playwright-extension.version}</version>
+            </dependency>
+            <!-- For Commons Exec -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-exec</artifactId>
+                <version>${commons-exec.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commons-pool2.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons-logging.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- http://mvnrepository.com/artifact/com.google.guava/guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox-tools</artifactId>
+                <version>${pdfbox.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-debugger -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox-debugger</artifactId>
+                <version>${pdfbox.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz (removed: legacy artifact not available) -->
+            <!--
+            <dependency>
+            <groupId>io.github.hiwepy</groupId>
+            <artifactId>spring-enhance</artifactId>
+            <version>${spring-biz.version}</version>
+            </dependency>
+            -->
+            <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${transmittable-thread-local.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+            <!-- Thumbnailator是一个用来生成图像缩略图的 Java类库，通过很简单的代码即可生成图片缩略图，也可直接对一整个目录的图片生成缩略图。 -->
+            <!--
+            Thumbnailator 是一个纯java的图片压缩工具，可以进行图片的裁剪，压缩，格式转换，旋转图片，
+            水印处理，压缩后图片不失真，经测试，9M的图片压缩后像素不变的情况下文件大小只有800K
+            -->
+            <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+            <dependency>
+                <groupId>net.coobird</groupId>
+                <artifactId>thumbnailator</artifactId>
+                <version>${thumbnailator.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.github.hiwepy</groupId>
+                <artifactId>redistpl-plus-spring-boot-starter</artifactId>
+                <version>${redistpl-plus-spring-boot-starter.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Java Servlet API (provided by spring-boot-starter in 4.x via jakarta; using jakarta) -->
+        <!-- For Servlet Api -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- For Slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Core starter, including auto-configuration support, logging and YAML -->
+        <!-- For Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- @ConfigurationProperties annotation processing (metadata for IDEs) -->
+        <!-- For Spring Boot Configuration Processor -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Compile dependencies -->
+        <!-- For Spring Boot AutoConfiguration -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <!-- For Spring Boot Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+        </dependency>
+        <!-- playwright-extension: extension library wrapping Microsoft Playwright -->
+        <dependency>
+            <groupId>io.github.easy4j</groupId>
+            <artifactId>playwright-extension-core</artifactId>
+        </dependency>
+        <!-- Apache Commons Exec -->
+        <!-- For Commons Exec -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-io -->
+        <!-- For Commons Lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz (removed: legacy artifact not available) -->
+        <!--
+        <dependency>
+        <groupId>io.github.hiwepy</groupId>
+        <artifactId>spring-enhance</artifactId>
+        </dependency>
+        -->
+        <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
+        <!-- For Caffeine -->
+        <!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- For Image to pdf -->
+        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+        <!-- Thumbnailator是一个用来生成图像缩略图的 Java类库，通过很简单的代码即可生成图片缩略图，也可直接对一整个目录的图片生成缩略图。 -->
+        <!--
+        Thumbnailator 是一个纯java的图片压缩工具，可以进行图片的裁剪，压缩，格式转换，旋转图片，
+        水印处理，压缩后图片不失真，经测试，9M的图片压缩后像素不变的情况下文件大小只有800K
+        -->
+        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- For Guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- For Redis -->
+        <!-- Source: https://github.com/easy-4-java/redistpl-plus-spring-boot-starter — easy4j redistpl-plus-spring-boot-starter (removed: legacy artifact not available) -->
+        <!--
+        <dependency>
+        <groupId>io.github.hiwepy</groupId>
+        <artifactId>redistpl-plus-spring-boot-starter</artifactId>
+        <version>${redistpl-plus-spring-boot-starter.version}</version>
+        <scope>test</scope>
+        </dependency>
+        -->
+    </dependencies>
+
+    <!-- 制品发布仓库配置（distributionManagement） -->
+    <distributionManagement>
         <repository>
             <id>2624322-release-6F6h6R</id>
             <url>https://packages.aliyun.com/6927b116e6c3e0425dbdf60d/maven/2624322-release-6f6h6r</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <snapshotRepository>
             <id>2624322-snapshot-3EoOv3</id>
             <url>https://packages.aliyun.com/6927b116e6c3e0425dbdf60d/maven/2624322-snapshot-3eoov3</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <uniqueVersion>true</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
 
+    <!-- 构建配置（Build） -->
     <build>
-
         <pluginManagement>
             <plugins>
                 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
@@ -154,9 +501,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
-                    <configuration>
-                        <attach>true</attach>
-                    </configuration>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -172,18 +516,16 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
-                        <!-- 跳过单元测试 -->
-                        <!-- forkMode 可设置值有 “never”， “once”， “always” 和 “pertest”。 pretest：
-                            每一个测试创建一个新进程，为每个测试创建新的JVM是单独测试的最彻底方式，但也是最慢的，不适合hudson上持续回归。 once：在一个进程中进行所有测试。once为默认设置，在Hudson上持续回归时建议使用默认设置。
-                            always：在一个进程中并行的运行脚本，Junit4.7以上版本才可以使用，surefire的版本要在2.6以上提供这个功能，其中 threadCount：执行时，指定可分配的线程数量。只和参数parallel配合使用有效。默认：5。 -->
-                        <forkMode>once</forkMode>
+                        <skip>false</skip>
+                        <skipTests>false</skipTests>
+                        <!--suppress UnresolvedMavenProperty -->
                         <argLine>${argLine} -Xmx1024m -Dfile.encoding=UTF-8</argLine>
                         <additionalClasspathElements>
                             <additionalClasspathElement>${basedir}/target/test-classes</additionalClasspathElement>
                         </additionalClasspathElements>
                         <includes>
                             <include>**/*Test.java</include>
-                        <include>**/*_Test.java</include>
+                            <include>**/*_Test.java</include>
                         </includes>
                         <excludes>
                             <exclude>**/TestBean.java</exclude>
@@ -242,70 +584,41 @@
                         <detectBuildFailures>true</detectBuildFailures>
                     </configuration>
                 </plugin>
-                        <!-- 中央仓库发布插件: 将制品发布至 Maven Central -->
-            <!-- https://mvnrepository.com/artifact/org.sonatype.central/central-publishing-maven-plugin -->
-            <plugin>
                 <!-- 中央仓库发布插件: 将制品发布至 Maven Central -->
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>${maven-central-publishing-plugin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                </configuration>
-            </plugin>
+                <!-- https://mvnrepository.com/artifact/org.sonatype.central/central-publishing-maven-plugin -->
+                <plugin>
+                    <!-- 中央仓库发布插件: 将制品发布至 Maven Central -->
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${maven-central-publishing-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
-            <!--环境检查插件：代码编译前的环境检查 -->
-            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
-            
-                        <!-- 单元测试覆盖率插件: 强制要求 90% 覆盖率 -->
-            <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
             <plugin>
-                <!-- 单元测试覆盖率插件: 强制要求 90% 覆盖率 -->
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${maven-jacoco-plugin.version}</version>
                 <executions>
+                    <execution><id>prepare-agent</id><goals><goal>prepare-agent</goal></goals></execution>
+                    <execution><id>report</id><phase>verify</phase><goals><goal>report</goal></goals></execution>
                     <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>check</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
+                        <id>check</id><phase>verify</phase><goals><goal>check</goal></goals>
                         <configuration>
                             <haltOnFailure>true</haltOnFailure>
-                            <rules>
-                                <rule>
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.90</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
+                            <rules><rule><element>BUNDLE</element><limits><limit>
+                                <counter>LINE</counter><value>COVEREDRATIO</value><minimum>0.90</minimum>
+                            </limit></limits></rule></rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
+            <!--环境检查插件：代码编译前的环境检查 -->
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
             <plugin>
                 <!-- 环境检查插件：代码编译前的环境检查 -->
                 <groupId>org.apache.maven.plugins</groupId>
@@ -364,12 +677,11 @@
     </build>
 
     <profiles>
-
         <profile>
             <id>disable-javadoc-doclint</id>
-                <activation>
-                    <jdk>[1.8,)</jdk>
-                </activation>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
             <properties>
                 <additionalparam>-Xdoclint:none</additionalparam>
             </properties>
@@ -460,334 +772,16 @@
                         <!-- 将制品 staging 至 OSS Sonatype Nexus -->
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                    </plugin>                    <!-- https://mvnrepository.com/artifact/org.sonatype.central/central-publishing-maven-plugin -->
+                    </plugin>
+                    <!-- https://mvnrepository.com/artifact/org.sonatype.central/central-publishing-maven-plugin -->
                     <plugin>
                         <!-- 中央仓库发布插件: 将制品发布至 Maven Central -->
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>
     </profiles>
-
-    <properties>
-        <java.version>21</java.version>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.version>3.0</maven.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <maven-jacoco-plugin.version>0.8.15</maven-jacoco-plugin.version>
-        <maven-central-publishing-plugin.version>0.11.0</maven-central-publishing-plugin.version>
-        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-        <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-        <!-- Dependency versions -->
-        <commons-exec.version>1.4.0</commons-exec.version>
-        <commons-pool2.version>2.13.0</commons-pool2.version>
-        <commons-lang3.version>3.17.0</commons-lang3.version>
-        <commons-logging.version>1.3.4</commons-logging.version>
-        <commons-io.version>2.17.0</commons-io.version>
-        <fastjson2.version>2.0.56</fastjson2.version>
-        <guava.version>33.4.0-jre</guava.version>
-        <gson.version>2.8.9</gson.version>
-        <hutool.version>5.8.32</hutool.version>
-        <pdfbox.version>3.0.3</pdfbox.version>
-        <playwright.version>1.48.0</playwright.version>
-        <!-- playwright-extension component version that this starter depends on -->
-        <playwright-extension.version>3.0.x.20260630-SNAPSHOT</playwright-extension.version>
-        <spring-biz.version>1.1.5.RELEASE</spring-biz.version>
-        <snakeyaml.version>1.33</snakeyaml.version>
-        <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
-        <thumbnailator.version>0.4.19</thumbnailator.version>
-                <redistpl-plus-spring-boot-starter.version>3.0.x.20260630-SNAPSHOT</redistpl-plus-spring-boot-starter.version>
-    </properties>
-
-    <dependencyManagement>
-
-        <dependencies>
-            <!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
-            <dependency>
-                <groupId>com.microsoft.playwright</groupId>
-                <artifactId>playwright</artifactId>
-                <version>${playwright.version}</version>
-            </dependency>
-            <!-- playwright-extension: extension library wrapping Microsoft Playwright -->
-            <dependency>
-                <groupId>io.github.easy4j</groupId>
-                <artifactId>playwright-extension-core</artifactId>
-                <version>${playwright-extension.version}</version>
-            </dependency>
-            <!-- For Commons Exec -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-exec</artifactId>
-                <version>${commons-exec.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-pool2</artifactId>
-                <version>${commons-pool2.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>${commons-logging.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
-            <dependency>
-                <groupId>com.alibaba.fastjson2</groupId>
-                <artifactId>fastjson2</artifactId>
-                <version>${fastjson2.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- http://mvnrepository.com/artifact/com.google.guava/guava -->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox</artifactId>
-                <version>${pdfbox.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools -->
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox-tools</artifactId>
-                <version>${pdfbox.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-debugger -->
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox-debugger</artifactId>
-                <version>${pdfbox.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz (removed: legacy artifact not available) -->
-            <!--
-            <dependency>
-                <groupId>io.github.hiwepy</groupId>
-                <artifactId>spring-enhance</artifactId>
-                <version>${spring-biz.version}</version>
-            </dependency>
-            -->
-            <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>transmittable-thread-local</artifactId>
-                <version>${transmittable-thread-local.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
-            <!-- Thumbnailator是一个用来生成图像缩略图的 Java类库，通过很简单的代码即可生成图片缩略图，也可直接对一整个目录的图片生成缩略图。 -->
-            <!--
-                Thumbnailator 是一个纯java的图片压缩工具，可以进行图片的裁剪，压缩，格式转换，旋转图片，
-                 水印处理，压缩后图片不失真，经测试，9M的图片压缩后像素不变的情况下文件大小只有800K
-            -->
-            <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
-            <dependency>
-                <groupId>net.coobird</groupId>
-                <artifactId>thumbnailator</artifactId>
-                <version>${thumbnailator.version}</version>
-                <scope>test</scope>
-            </dependency>
-                <dependency>
-            <groupId>io.github.hiwepy</groupId>
-            <artifactId>redistpl-plus-spring-boot-starter</artifactId>
-            <version>${redistpl-plus-spring-boot-starter.version}</version>
-            <scope>test</scope>
-        </dependency>
-</dependencies>
-    </dependencyManagement>
-
-    <dependencies>
-
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- Java Servlet API (provided by spring-boot-starter in 4.x via jakarta; using jakarta) -->
-        <!-- For Servlet Api -->
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- For Slf4j -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Core starter, including auto-configuration support, logging and YAML -->
-        <!-- For Spring Boot -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- @ConfigurationProperties annotation processing (metadata for IDEs) -->
-        <!-- For Spring Boot Configuration Processor -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <!-- Compile dependencies -->
-        <!-- For Spring Boot AutoConfiguration -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-         <!-- For Spring Boot Test -->
-         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
-        <dependency>
-            <groupId>com.microsoft.playwright</groupId>
-            <artifactId>playwright</artifactId>
-        </dependency>
-        <!-- playwright-extension: extension library wrapping Microsoft Playwright -->
-        <dependency>
-            <groupId>io.github.easy4j</groupId>
-            <artifactId>playwright-extension-core</artifactId>
-        </dependency>
-        <!-- Apache Commons Exec -->
-        <!-- For Commons Exec -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-exec</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-io -->
-        <!-- For Commons Lang3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <!-- Source: https://github.com/easy-4-java/spring-enhance — easy4j spring-biz (removed: legacy artifact not available) -->
-        <!--
-        <dependency>
-            <groupId>io.github.hiwepy</groupId>
-            <artifactId>spring-enhance</artifactId>
-        </dependency>
-        -->
-        <!-- https://mvnrepository.com/artifact/com.alibaba/transmittable-thread-local -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>transmittable-thread-local</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
-
-        <!-- For Caffeine -->
-        <!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- For Image to pdf -->
-        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
-        <!-- Thumbnailator是一个用来生成图像缩略图的 Java类库，通过很简单的代码即可生成图片缩略图，也可直接对一整个目录的图片生成缩略图。 -->
-        <!--
-            Thumbnailator 是一个纯java的图片压缩工具，可以进行图片的裁剪，压缩，格式转换，旋转图片，
-             水印处理，压缩后图片不失真，经测试，9M的图片压缩后像素不变的情况下文件大小只有800K
-        -->
-        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
-        <dependency>
-            <groupId>net.coobird</groupId>
-            <artifactId>thumbnailator</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- For Guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- For Redis -->
-        <!-- Source: https://github.com/easy-4-java/redistpl-plus-spring-boot-starter — easy4j redistpl-plus-spring-boot-starter (removed: legacy artifact not available) -->
-        <!--
-        <dependency>
-            <groupId>io.github.hiwepy</groupId>
-            <artifactId>redistpl-plus-spring-boot-starter</artifactId>
-            <version>${redistpl-plus-spring-boot-starter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        -->
-
-    </dependencies>
 
 </project>
