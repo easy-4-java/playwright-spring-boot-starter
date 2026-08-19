@@ -31,12 +31,6 @@ import java.util.function.Function;
  */
 @ConfigurationProperties(PlaywrightProperties.PREFIX)
 @Data
-/**
- * <p>Configuration properties for Playwright.</p>
- *
- * @author <a href="https://github.com/loong10k">Loong Wan</a>
- * @since 1.0.0
- */
 public class PlaywrightProperties {
 
 	// 85% 内存使用率阈值
@@ -115,6 +109,11 @@ public class PlaywrightProperties {
 			this.function = function;
 		}
 
+    /**
+     * <p>Returns the browser type.</p>
+     * @param playwright
+     * @return the get browser type
+     */
 		public BrowserType getBrowserType(Playwright playwright) {
 			return function.apply(playwright);
 		}

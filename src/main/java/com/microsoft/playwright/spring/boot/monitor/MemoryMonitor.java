@@ -7,12 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 @Slf4j
-/**
- * <p>MemoryMonitor implementation.</p>
- *
- * @author <a href="https://github.com/loong10k">Loong Wan</a>
- * @since 1.0.0
- */
 public class MemoryMonitor {
 
     private final double memoryThreshold;
@@ -22,6 +16,9 @@ public class MemoryMonitor {
     }
 
     @Scheduled(fixedRate = 5000) // 每5秒检查一次
+    /**
+     * <p>Monitor memory.</p>
+     */
     public void monitorMemory() {
         Runtime runtime = Runtime.getRuntime();
         long maxMemory = runtime.maxMemory();
@@ -43,6 +40,10 @@ public class MemoryMonitor {
             String.format("%.2f", memoryUsage * 100));
     }
 
+    /**
+     * <p>Checks if memory available.</p>
+     * @return the is memory available
+     */
     public boolean isMemoryAvailable() {
         Runtime runtime = Runtime.getRuntime();
         long maxMemory = runtime.maxMemory();

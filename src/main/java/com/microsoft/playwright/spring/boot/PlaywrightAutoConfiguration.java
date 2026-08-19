@@ -23,27 +23,37 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass({ Playwright.class, PooledObjectFactory.class })
 @EnableConfigurationProperties(PlaywrightProperties.class)
 @Slf4j
-/**
- * <p>Spring Boot auto-configuration for Playwright.</p>
- *
- * @author <a href="https://github.com/loong10k">Loong Wan</a>
- * @since 1.0.0
- */
 public class PlaywrightAutoConfiguration {
 
     @Bean
+    /**
+     * <p>Memory monitor.</p>
+     * @param playwrightProperties
+     * @return the memory monitor
+     */
     public MemoryMonitor memoryMonitor(PlaywrightProperties playwrightProperties){
         return new MemoryMonitor(playwrightProperties.getMemoryThreshold());
     }
 
     @Bean
     @ConditionalOnMissingBean
+    /**
+     * <p>Browser context pooled object factory.</p>
+     * @param playwrightProperties
+     * @return the browser context pooled object factory
+     */
     public BrowserContextPooledObjectFactory browserContextPooledObjectFactory(PlaywrightProperties playwrightProperties){
         return new BrowserContextPooledObjectFactory(playwrightProperties);
     }
 
     @Bean
     @ConditionalOnMissingBean
+    /**
+     * <p>Browser context pool.</p>
+     * @param playwrightProperties
+     * @param browserContextPooledObjectFactory
+     * @return the browser context pool
+     */
     public BrowserContextPool browserContextPool(PlaywrightProperties playwrightProperties, BrowserContextPooledObjectFactory browserContextPooledObjectFactory){
 
         // 1、创建 GenericObjectPoolConfig 对象，并进行必要的配置

@@ -30,6 +30,9 @@ public class BrowserContextInitializer implements Runnable {
 	}
 
 	@Override
+    /**
+     * <p>Run.</p>
+     */
 	public void run() {
 		if(Objects.nonNull(browserContextPool) && Objects.nonNull(playwrightProperties)){
 			try {
