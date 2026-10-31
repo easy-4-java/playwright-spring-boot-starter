@@ -45,7 +45,11 @@ class BrowserContextPoolLifecycleTest {
             BrowserContext context = browser.newContext();
             BrowserContext sibling = browser.newContext();
             BrowserContextPooledObjectFactory factory = factory();
+            Page existingPage = context.newPage();
+            context.addCookies(List.of(new Cookie("fixture", "value").setUrl("https://example.invalid")));
             assertTrue(factory.validateObject(new DefaultPooledObject<>(context)));
+            assertFalse(existingPage.isClosed());
+            assertEquals(1, context.cookies().size());
             context.close();
             assertTrue(browser.isConnected());
             assertFalse(factory.validateObject(new DefaultPooledObject<>(context)));
@@ -105,6 +109,25 @@ class BrowserContextPoolLifecycleTest {
     @Test
     void returnDestroysClosedContextRatherThanKeepingItIdle() throws Exception {
         try (BrowserContextPool pool = pool()) {
+            BrowserContext first = pool.borrowObject();
+            first.close();
+            pool.returnObject(first);
+            assertEquals(0, pool.getNumIdle());
+            assertEquals(1, pool.getDestroyedCount());
+            BrowserContext replacement = pool.borrowObject();
+            try {
+                assertNotSame(first, replacement);
+                assertEquals("usable", replacement.newPage().evaluate("() => 'usable'"));
+            } finally {
+                pool.returnObject(replacement);
+            }
+        }
+    }
+
+    @Test
+    void passivationFailureDestroysContextEvenWithoutReturnValidation() throws Exception {
+        try (BrowserContextPool pool = pool()) {
+            pool.setTestOnReturn(false);
             BrowserContext first = pool.borrowObject();
             first.close();
             pool.returnObject(first);
