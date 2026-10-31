@@ -283,6 +283,31 @@ class BrowserContextPooledObjectFactoryTest {
         }
     }
 
+    @Test
+    void shutdownOwnerCloseFailureStillDeletesPersistentDirectory() throws Exception {
+        PlaywrightProperties props = new PlaywrightProperties();
+        props.getLaunchPersistentContextOptions().setUserDataDir(tempDir.toString());
+        props.getLaunchPersistentContextOptions().setMaximumContentSize(1);
+        BrowserContextPooledObjectFactory factory = new BrowserContextPooledObjectFactory(props);
+        Playwright owner = mock(Playwright.class);
+        BrowserType type = mock(BrowserType.class);
+        BrowserContext context = mock(BrowserContext.class);
+        when(owner.chromium()).thenReturn(type);
+        when(type.launchPersistentContext(any(Path.class), any(BrowserType.LaunchPersistentContextOptions.class)))
+                .thenReturn(context);
+        doThrow(new com.microsoft.playwright.PlaywrightException("driver close failed")).when(owner).close();
+        try (MockedStatic<Playwright> creation = org.mockito.Mockito.mockStatic(Playwright.class)) {
+            creation.when(Playwright::create).thenReturn(owner);
+            factory.makeObject();
+            factory.destroy();
+            try (java.util.stream.Stream<Path> directories = java.nio.file.Files.list(tempDir)) {
+                assertThat(directories.count()).isZero();
+            }
+            factory.destroy();
+            verify(owner, times(1)).close();
+        }
+    }
+
     // ---- makeObject (isolated path) ----
 
     @Test
