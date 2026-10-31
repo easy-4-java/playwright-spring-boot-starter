@@ -188,6 +188,22 @@ class BrowserContextPoolLifecycleTest {
     }
 
     @Test
+    void shuttingDownOneFactoryDoesNotCloseAnotherFactoryDriver() throws Exception {
+        BrowserContextPooledObjectFactory firstFactory = factory();
+        BrowserContextPooledObjectFactory secondFactory = factory();
+        BrowserContext first = firstFactory.makeObject().getObject();
+        BrowserContext second = secondFactory.makeObject().getObject();
+        try {
+            firstFactory.destroy();
+            assertEquals("independent", second.newPage().evaluate("() => 'independent'"));
+            assertTrue(secondFactory.validateObject(new DefaultPooledObject<>(second)));
+        } finally {
+            firstFactory.destroy();
+            secondFactory.destroy();
+        }
+    }
+
+    @Test
     void persistentContextLifecycleWorksWithTemporaryProfile() throws Exception {
         try (Playwright playwright = Playwright.create()) {
             BrowserContext context = playwright.chromium().launchPersistentContext(temporaryProfile,
