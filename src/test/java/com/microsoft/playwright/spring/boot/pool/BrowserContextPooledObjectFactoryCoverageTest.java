@@ -272,7 +272,7 @@ class BrowserContextPooledObjectFactoryCoverageTest {
     }
 
     @Test
-    void passivateObject_whenClearCookiesThrows_shouldSwallow() throws Exception {
+    void passivateObject_whenClearCookiesThrows_shouldPropagate() throws Exception {
         PlaywrightProperties props = persistentProps();
         BrowserContextPooledObjectFactory factory = new BrowserContextPooledObjectFactory(props);
 
@@ -284,7 +284,7 @@ class BrowserContextPooledObjectFactoryCoverageTest {
         doThrow(new RuntimeException("clearCookies fails")).when(ctx).clearCookies();
 
         PooledObject<BrowserContext> pooled = new DefaultPooledObject<>(ctx);
-        assertThatCode(() -> factory.passivateObject(pooled)).doesNotThrowAnyException();
+        assertThatCode(() -> factory.passivateObject(pooled)).isInstanceOf(RuntimeException.class).hasMessage("clearCookies fails");
     }
 
     @Test
@@ -485,3 +485,4 @@ class BrowserContextPooledObjectFactoryCoverageTest {
                 .isEqualTo(BrowserNewContextOptions.DEFAULT_RESOURCE_CLEANUP_TIMEOUT_MS);
     }
 }
+
