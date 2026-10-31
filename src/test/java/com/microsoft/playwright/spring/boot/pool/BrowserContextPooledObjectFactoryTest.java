@@ -449,6 +449,9 @@ class BrowserContextPooledObjectFactoryTest {
 
         assertThatCode(() -> factory.destroy()).doesNotThrowAnyException();
         verify(ctx).close();
+        verify(playwright).close();
+        factory.destroy();
+        verify(playwright, times(1)).close();
     }
 
     // ---- getter helpers ----

@@ -477,20 +477,44 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
 
     @Override
     public void destroy() throws Exception {
-        PLAYWRIGHT_MAP.forEach((browserContext, playwright) -> {
+        PLAYWRIGHT_MAP.forEach((browserContext, ignored) -> {
+            // Claim the owned driver before closing anything: disconnect callbacks must
+            // not close it a second time, and repeated shutdown must not retain entries.
+            Playwright playwright = PLAYWRIGHT_MAP.remove(browserContext);
+            if (playwright == null) {
+                return;
+            }
             try {
                 PlaywrightUtil.cleanupBrowserContext(browserContext);
-                browserContext.close();
-                if (playwright != null) {
-                    playwright.close();
-                    log.info("Destroy browserContext of Playwright Instance '{}' Success.", playwright);
-                }
             } catch (Exception e) {
-                log.error("Error destroying browser context", e);
+                log.warn("Error cleaning up browser context during shutdown");
+            } finally {
+                try {
+                    browserContext.close();
+                } catch (Exception e) {
+                    log.warn("Error closing browser context during shutdown");
+                } finally {
+                    try {
+                        // Close only the Playwright instance registered by makeObject.
+                        playwright.close();
+                    } catch (Exception e) {
+                        log.warn("Error closing owned Playwright during shutdown");
+                    } finally {
+                        Path contextDir = CONTEXT_DIR_MAP.remove(browserContext);
+                        if (contextDir != null) {
+                            CONTEXT_DIR_LAST_USED.remove(contextDir);
+                            CONTEXT_DIR_SIZE.remove(contextDir);
+                            try {
+                                FileUtils.deleteDirectory(contextDir.toFile());
+                            } catch (Exception e) {
+                                log.warn("Error deleting context directory during shutdown");
+                            }
+                        }
+                    }
+                }
             }
         });
     }
-
 
 
     /**
