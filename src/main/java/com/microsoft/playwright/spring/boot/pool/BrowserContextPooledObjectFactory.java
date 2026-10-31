@@ -124,6 +124,7 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      * its cookies before reuse.
      * @param p a {@code PooledObject} wrapping the instance to be activated
      * @throws Exception if there is a problem activating the object
+     */
     @Override
     public void activateObject(PooledObject<BrowserContext> p) throws Exception {
         BrowserContext browserContext = p.getObject();
@@ -144,6 +145,7 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      * @param p a {@code PooledObject} wrapping the instance to be validated
      * @return {@code false} if this object is not currently valid and should be dropped
      *         from the pool, {@code true} otherwise
+     */
     @Override
     public boolean validateObject(PooledObject<BrowserContext> p) {
         BrowserContext browserContext = p.getObject();
@@ -158,6 +160,7 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      * context is created; otherwise a persistent context backed by the next available
      * user-data directory is launched.
      * @return a new instance that can be served by the pool
+     */
     @Override
     public PooledObject<BrowserContext> makeObject() {
         log.info("Create Playwright Instance .");
@@ -380,6 +383,7 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      * session storage, cookies and pages and refreshing the directory-size bookkeeping.
      * @param p a {@code PooledObject} wrapping the instance to be passivated
      * @throws Exception if there is a problem passivating the object
+     */
     @Override
     public void passivateObject(PooledObject<BrowserContext> p) throws Exception {
         BrowserContext browserContext = p.getObject();
@@ -433,6 +437,7 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      * retried up to the configured number of attempts.
      * @param p a {@code PooledObject} wrapping the instance to be destroyed
      * @throws Exception if there is a problem destroying the object
+     */
     @Override
     public void destroyObject(PooledObject<BrowserContext> p) throws Exception {
         BrowserContext browserContext = p.getObject();
@@ -504,6 +509,7 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      * Invoked by the Spring container on shutdown to close every remaining browser
      * context and its owning Playwright instance.
      * @throws Exception if an error occurs while destroying resources
+     */
     @Override
     public void destroy() throws Exception {
         PLAYWRIGHT_MAP.forEach((browserContext, playwright) -> {
