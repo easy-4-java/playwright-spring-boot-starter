@@ -142,6 +142,22 @@ class BrowserContextPoolLifecycleTest {
     }
 
     @Test
+    void shutdownClosesOwnedBrowserEvenWhenContextWasAlreadyClosed() throws Exception {
+        BrowserContextPooledObjectFactory factory = factory();
+        BrowserContext context = factory.makeObject().getObject();
+        Browser ownedBrowser = context.browser();
+        try {
+            context.close();
+            assertTrue(ownedBrowser.isConnected());
+            factory.destroy();
+            assertFalse(ownedBrowser.isConnected());
+            factory.destroy();
+        } finally {
+            factory.destroyObject(new DefaultPooledObject<>(context));
+        }
+    }
+
+    @Test
     void persistentContextLifecycleWorksWithTemporaryProfile() throws Exception {
         try (Playwright playwright = Playwright.create()) {
             BrowserContext context = playwright.chromium().launchPersistentContext(temporaryProfile,
@@ -163,3 +179,4 @@ class BrowserContextPoolLifecycleTest {
         }
     }
 }
+
