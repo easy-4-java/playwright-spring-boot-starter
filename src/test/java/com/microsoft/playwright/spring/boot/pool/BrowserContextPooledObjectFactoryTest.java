@@ -284,10 +284,13 @@ class BrowserContextPooledObjectFactoryTest {
     }
 
     @Test
-    void shutdownOwnerCloseFailureStillDeletesPersistentDirectory() throws Exception {
+    void shutdownOwnerCloseFailureReleasesTrackingWithoutDeletingProfile() throws Exception {
+        Path existingProfile = java.nio.file.Files.createDirectory(tempDir.resolve("context_000"));
+        Path marker = java.nio.file.Files.writeString(existingProfile.resolve("keep.txt"), "profile fixture");
         PlaywrightProperties props = new PlaywrightProperties();
         props.getLaunchPersistentContextOptions().setUserDataDir(tempDir.toString());
         props.getLaunchPersistentContextOptions().setMaximumContentSize(1);
+        props.getLaunchPersistentContextOptions().setMaximumDirUsageTimeout(Long.MAX_VALUE);
         BrowserContextPooledObjectFactory factory = new BrowserContextPooledObjectFactory(props);
         Playwright owner = mock(Playwright.class);
         BrowserType type = mock(BrowserType.class);
@@ -300,9 +303,7 @@ class BrowserContextPooledObjectFactoryTest {
             creation.when(Playwright::create).thenReturn(owner);
             factory.makeObject();
             factory.destroy();
-            try (java.util.stream.Stream<Path> directories = java.nio.file.Files.list(tempDir)) {
-                assertThat(directories.count()).isZero();
-            }
+            assertThat(java.nio.file.Files.readString(marker)).isEqualTo("profile fixture");
             factory.destroy();
             verify(owner, times(1)).close();
         }

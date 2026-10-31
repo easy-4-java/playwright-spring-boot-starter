@@ -534,11 +534,8 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
                         if (contextDir != null) {
                             CONTEXT_DIR_LAST_USED.remove(contextDir);
                             CONTEXT_DIR_SIZE.remove(contextDir);
-                            try {
-                                FileUtils.deleteDirectory(contextDir.toFile());
-                            } catch (Exception e) {
-                                log.warn("Error deleting context directory during shutdown");
-                            }
+                            // Shutdown releases tracking only. The configured profile
+                            // may contain pre-existing data; do not add a deletion path.
                         }
                     }
                 }
