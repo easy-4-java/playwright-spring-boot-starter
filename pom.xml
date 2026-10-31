@@ -498,7 +498,7 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
         <thumbnailator.version>0.4.19</thumbnailator.version>
-                <redistpl-plus-spring-boot-starter.version>3.0.x.20260630-SNAPSHOT</redistpl-plus-spring-boot-starter.version>
+                <redistpl-plus-spring-boot-starter.version>4.0.x.20260630-SNAPSHOT</redistpl-plus-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -615,7 +615,7 @@
                 <scope>test</scope>
             </dependency>
                 <dependency>
-            <groupId>io.github.hiwepy</groupId>
+            <groupId>io.github.easy4j</groupId>
             <artifactId>redistpl-plus-spring-boot-starter</artifactId>
             <version>${redistpl-plus-spring-boot-starter.version}</version>
             <scope>test</scope>
@@ -624,6 +624,19 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>hitool-core</artifactId>
+            <version>3.0.x.20241003.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
@@ -775,7 +788,7 @@
         <!-- Source: https://github.com/easy-4-java/redistpl-plus-spring-boot-starter — easy4j redistpl-plus-spring-boot-starter (removed: legacy artifact not available) -->
         <!--
         <dependency>
-            <groupId>io.github.hiwepy</groupId>
+            <groupId>io.github.easy4j</groupId>
             <artifactId>redistpl-plus-spring-boot-starter</artifactId>
             <version>${redistpl-plus-spring-boot-starter.version}</version>
             <scope>test</scope>
