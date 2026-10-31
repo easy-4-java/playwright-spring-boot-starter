@@ -514,6 +514,7 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
             if (playwright == null) {
                 return;
             }
+            Path contextDir = CONTEXT_DIR_MAP.remove(browserContext);
             try {
                 PlaywrightUtil.cleanupBrowserContext(browserContext);
             } catch (Exception e) {
@@ -530,7 +531,6 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
                     } catch (Exception e) {
                         log.warn("Error closing owned Playwright during shutdown");
                     } finally {
-                        Path contextDir = CONTEXT_DIR_MAP.remove(browserContext);
                         if (contextDir != null) {
                             CONTEXT_DIR_LAST_USED.remove(contextDir);
                             CONTEXT_DIR_SIZE.remove(contextDir);
