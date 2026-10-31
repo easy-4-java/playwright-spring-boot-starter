@@ -259,6 +259,30 @@ class BrowserContextPooledObjectFactoryTest {
         }
     }
 
+    @Test
+    void shutdownCleanupFailureStillClosesOwnerAndReleasesTracking() throws Exception {
+        PlaywrightProperties props = new PlaywrightProperties();
+        props.setIsolated(true);
+        BrowserContextPooledObjectFactory factory = new BrowserContextPooledObjectFactory(props);
+        Playwright owner = mock(Playwright.class);
+        BrowserType type = mock(BrowserType.class);
+        Browser browser = mock(Browser.class);
+        BrowserContext context = mock(BrowserContext.class);
+        when(owner.chromium()).thenReturn(type);
+        when(type.launch(any(BrowserType.LaunchOptions.class))).thenReturn(browser);
+        when(browser.newContext(any(Browser.NewContextOptions.class))).thenReturn(context);
+        doThrow(new com.microsoft.playwright.PlaywrightException("cleanup failed")).when(context).clearCookies();
+        try (MockedStatic<Playwright> creation = org.mockito.Mockito.mockStatic(Playwright.class)) {
+            creation.when(Playwright::create).thenReturn(owner);
+            factory.makeObject();
+            factory.destroy();
+            verify(context).close();
+            verify(owner).close();
+            factory.destroy();
+            verify(owner, times(1)).close();
+        }
+    }
+
     // ---- makeObject (isolated path) ----
 
     @Test
