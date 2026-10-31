@@ -785,15 +785,12 @@
             <scope>test</scope>
         </dependency>
         <!-- For Redis -->
-        <!-- Source: https://github.com/easy-4-java/redistpl-plus-spring-boot-starter — easy4j redistpl-plus-spring-boot-starter (removed: legacy artifact not available) -->
-        <!--
         <dependency>
             <groupId>io.github.easy4j</groupId>
             <artifactId>redistpl-plus-spring-boot-starter</artifactId>
             <version>${redistpl-plus-spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
-        -->
 
     </dependencies>
 
