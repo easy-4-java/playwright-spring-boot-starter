@@ -493,7 +493,6 @@
         <playwright.version>1.48.0</playwright.version>
         <!-- playwright-extension component version that this starter depends on -->
         <playwright-extension.version>3.0.x.20260630-SNAPSHOT</playwright-extension.version>
-        <spring-framework.version>5.2.25.RELEASE</spring-framework.version>
         <spring-biz.version>1.1.5.RELEASE</spring-biz.version>
         <snakeyaml.version>1.33</snakeyaml.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
