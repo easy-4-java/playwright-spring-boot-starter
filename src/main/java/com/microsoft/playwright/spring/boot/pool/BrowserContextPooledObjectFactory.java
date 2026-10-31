@@ -43,9 +43,9 @@ import java.util.function.Consumer;
 public class BrowserContextPooledObjectFactory implements PooledObjectFactory<BrowserContext>, DisposableBean {
 
     /**
-     * Container tracking the {@link Playwright} instance owning each pooled context.
+     * Tracks only the {@link Playwright} instances created by this factory.
      */
-    private static final Map<BrowserContext, Playwright> PLAYWRIGHT_MAP = new ConcurrentHashMap<>();
+    private final Map<BrowserContext, Playwright> PLAYWRIGHT_MAP = new ConcurrentHashMap<>();
     private static final Map<BrowserContext, Path> CONTEXT_DIR_MAP = new ConcurrentHashMap<>();
     private static final Map<Path, Long> CONTEXT_DIR_LAST_USED = new ConcurrentHashMap<>();
     private static final Map<Path, Long> CONTEXT_DIR_SIZE = new ConcurrentHashMap<>();

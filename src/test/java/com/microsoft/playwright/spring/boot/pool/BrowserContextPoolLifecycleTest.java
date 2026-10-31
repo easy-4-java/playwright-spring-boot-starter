@@ -191,12 +191,18 @@ class BrowserContextPoolLifecycleTest {
     void shuttingDownOneFactoryDoesNotCloseAnotherFactoryDriver() throws Exception {
         BrowserContextPooledObjectFactory firstFactory = factory();
         BrowserContextPooledObjectFactory secondFactory = factory();
-        BrowserContext first = firstFactory.makeObject().getObject();
-        BrowserContext second = secondFactory.makeObject().getObject();
         try {
+            Browser firstBrowser = firstFactory.makeObject().getObject().browser();
+            BrowserContext second = secondFactory.makeObject().getObject();
+            Browser secondBrowser = second.browser();
             firstFactory.destroy();
+            assertEquals("Playwright connection closed",
+                    assertThrows(PlaywrightException.class, firstBrowser::newContext).getMessage());
             assertEquals("independent", second.newPage().evaluate("() => 'independent'"));
             assertTrue(secondFactory.validateObject(new DefaultPooledObject<>(second)));
+            secondFactory.destroy();
+            assertEquals("Playwright connection closed",
+                    assertThrows(PlaywrightException.class, secondBrowser::newContext).getMessage());
         } finally {
             firstFactory.destroy();
             secondFactory.destroy();

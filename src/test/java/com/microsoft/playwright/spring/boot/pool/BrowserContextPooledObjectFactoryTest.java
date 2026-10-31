@@ -302,6 +302,8 @@ class BrowserContextPooledObjectFactoryTest {
         try (MockedStatic<Playwright> creation = org.mockito.Mockito.mockStatic(Playwright.class)) {
             creation.when(Playwright::create).thenReturn(owner);
             factory.makeObject();
+            verify(type).launchPersistentContext(org.mockito.ArgumentMatchers.eq(existingProfile),
+                    any(BrowserType.LaunchPersistentContextOptions.class));
             factory.destroy();
             assertThat(java.nio.file.Files.readString(marker)).isEqualTo("profile fixture");
             factory.destroy();
