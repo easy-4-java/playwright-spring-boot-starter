@@ -2,9 +2,11 @@ package com.microsoft.playwright.spring.boot;
 
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.spring.boot.pool.BrowserContextPool;
 import com.microsoft.playwright.spring.boot.pool.BrowserContextPooledObjectFactory;
 import org.junit.jupiter.api.Test;
+import java.util.List;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +55,8 @@ class PlaywrightStarterPoolTest {
                 Page page = borrowed.newPage();
                 page.setContent("<p>local fixture</p>");
                 assertEquals("local fixture", page.locator("p").textContent());
+                borrowed.addCookies(List.of(new Cookie("session", "secret").setUrl("https://example.test")));
+                assertEquals(1, borrowed.cookies().size());
                 pool.returnObject(borrowed);
                 assertEquals(0, pool.getNumActive());
                 assertEquals(1, pool.getNumIdle());
