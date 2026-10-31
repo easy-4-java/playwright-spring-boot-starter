@@ -165,6 +165,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
+                        <failIfNoTests>true</failIfNoTests>
                         <!-- 跳过单元测试 -->
                         <!-- forkMode 可设置值有 “never”， “once”， “always” 和 “pertest”。 pretest：
                             每一个测试创建一个新进程，为每个测试创建新的JVM是单独测试的最彻底方式，但也是最慢的，不适合hudson上持续回归。 once：在一个进程中进行所有测试。once为默认设置，在Hudson上持续回归时建议使用默认设置。
@@ -477,7 +478,7 @@
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
         <!-- Dependency versions -->
         <commons-exec.version>1.4.0</commons-exec.version>
@@ -493,7 +494,6 @@
         <playwright.version>1.48.0</playwright.version>
         <!-- playwright-extension component version that this starter depends on -->
         <playwright-extension.version>3.0.x.20260630-SNAPSHOT</playwright-extension.version>
-        <spring-framework.version>5.2.25.RELEASE</spring-framework.version>
         <spring-biz.version>1.1.5.RELEASE</spring-biz.version>
         <snakeyaml.version>1.33</snakeyaml.version>
         <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
