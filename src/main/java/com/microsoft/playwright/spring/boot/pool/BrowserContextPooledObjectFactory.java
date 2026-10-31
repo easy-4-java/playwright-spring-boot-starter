@@ -43,9 +43,9 @@ import java.util.function.Consumer;
 public class BrowserContextPooledObjectFactory implements PooledObjectFactory<BrowserContext>, DisposableBean {
 
     /**
-     * Container tracking the {@link Playwright} instance owning each pooled context.
+     * Tracks only the {@link Playwright} instances created by this factory.
      */
-    private static final Map<BrowserContext, Playwright> PLAYWRIGHT_MAP = new ConcurrentHashMap<>();
+    private final Map<BrowserContext, Playwright> PLAYWRIGHT_MAP = new ConcurrentHashMap<>();
     private static final Map<BrowserContext, Path> CONTEXT_DIR_MAP = new ConcurrentHashMap<>();
     private static final Map<Path, Long> CONTEXT_DIR_LAST_USED = new ConcurrentHashMap<>();
     private static final Map<Path, Long> CONTEXT_DIR_SIZE = new ConcurrentHashMap<>();
@@ -127,32 +127,44 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      */
     @Override
     public void activateObject(PooledObject<BrowserContext> p) throws Exception {
-        BrowserContext browserContext = p.getObject();
-        log.info("Activate BrowserContext Instance '{}'.", browserContext);
-        if (Objects.nonNull(browserContext) && browserContext.browser() != null && browserContext.browser().isConnected()) {
-            try {
-                browserContext.clearCookies();
-            } catch (Exception e) {
-                log.warn("Failed to clear cookies, browser context might be closed", e);
-            }
+        BrowserContext browserContext = requireConnectedContext(p);
+        // A failed reset must reach Commons Pool so it destroys this object.
+        browserContext.clearCookies();
+    }
+
+    private BrowserContext requireConnectedContext(PooledObject<BrowserContext> p) {
+        BrowserContext context = p == null ? null : p.getObject();
+        if (context == null) {
+            throw new IllegalStateException("Browser context is missing");
         }
+        Browser browser = context.browser();
+        // Persistent contexts can have no Browser facade; probe the context itself.
+        if (browser != null && !browser.isConnected()) {
+            throw new IllegalStateException("Browser is disconnected");
+        }
+        return context;
     }
 
     /**
-     * Validates a pooled {@link BrowserContext} by ensuring the wrapped object is
-     * non-{@code null}. Validation runs periodically on idle objects, on borrow and on
-     * return; invalid objects are dropped from the pool.
+     * Validates a pooled {@link BrowserContext} with a read-only protocol round trip.
+     * When enabled in the pool configuration, validation rejects closed contexts and
+     * disconnected browsers on idle checks, borrow and return.
      * @param p a {@code PooledObject} wrapping the instance to be validated
      * @return {@code false} if this object is not currently valid and should be dropped
      *         from the pool, {@code true} otherwise
      */
     @Override
     public boolean validateObject(PooledObject<BrowserContext> p) {
-        BrowserContext browserContext = p.getObject();
-        log.info("Validate BrowserContext Instance '{}'.", browserContext);
-        boolean isValidated = Objects.nonNull(browserContext);
-        log.info("Validate BrowserContext : {}, isValidated : {}", browserContext, isValidated);
-        return isValidated;
+        try {
+            BrowserContext context = requireConnectedContext(p);
+            // browser.isConnected() and pages() alone cannot detect a closed context.
+            // This read-only protocol round trip also works without a Browser facade.
+            // Do not retain or log the returned cookies.
+            context.cookies();
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     /**
@@ -386,47 +398,30 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      */
     @Override
     public void passivateObject(PooledObject<BrowserContext> p) throws Exception {
-        BrowserContext browserContext = p.getObject();
-        log.info("Return BrowserContext Instance '{}'.", browserContext);
-        
-        if (Objects.nonNull(browserContext) && browserContext.browser() != null && browserContext.browser().isConnected()) {
+        BrowserContext browserContext = requireConnectedContext(p);
+        // Reset through the protocol even when there are no pages (or no Browser facade).
+        // Propagate failure instead of returning an unusable context to the idle pool.
+        browserContext.clearCookies();
+
+        browserContext.pages().forEach(page -> {
             try {
-                
-                // 1. 清理每个页面的数据
-                browserContext.pages().forEach(page -> {
-                    try {
-                        page.evaluate("() => window.localStorage.clear()");
-                        page.evaluate("() => window.sessionStorage.clear()");
-                        page.evaluate("() => { " +
-                                "const databases = window.indexedDB.databases(); " +
-                                "databases.then(dbs => dbs.forEach(db => window.indexedDB.deleteDatabase(db.name))); " +
-                                "}");
-                    } catch (Exception e) {
-                        log.warn("Failed to clear storage");
-                    }
-                });
-
-                // 2. 清理 cookies
-                try {
-                    browserContext.clearCookies();
-                } catch (Exception e) {
-                    log.warn("Failed to clear cookies");
-                }
-
-                // 3 先关闭所有页面
-                browserContext.pages().forEach(PlaywrightUtil::closePage);
-                
-                // 4. 更新目录大小
-                Path contextDir = CONTEXT_DIR_MAP.get(browserContext);
-                if (contextDir != null) {
-                    updateDirectorySize(contextDir);
-                }
-                
-                log.info("Return BrowserContext Instance : clear all session data success");
+                // Best effort for opaque origins such as about:blank, which deny storage.
+                page.evaluate("() => window.localStorage.clear()");
+                page.evaluate("() => window.sessionStorage.clear()");
+                page.evaluate("() => { " +
+                        "const databases = window.indexedDB.databases(); " +
+                        "databases.then(dbs => dbs.forEach(db => window.indexedDB.deleteDatabase(db.name))); " +
+                        "}");
             } catch (Exception e) {
-                log.error("Error clearing session data", e);
-                throw e;
+                log.warn("Failed to clear storage");
             }
+        });
+        // Unlike best-effort destruction, passivation must report page-close failures.
+        browserContext.pages().forEach(page -> page.close());
+
+        Path contextDir = CONTEXT_DIR_MAP.get(browserContext);
+        if (contextDir != null) {
+            updateDirectorySize(contextDir);
         }
     }
 
@@ -512,20 +507,41 @@ public class BrowserContextPooledObjectFactory implements PooledObjectFactory<Br
      */
     @Override
     public void destroy() throws Exception {
-        PLAYWRIGHT_MAP.forEach((browserContext, playwright) -> {
+        PLAYWRIGHT_MAP.forEach((browserContext, ignored) -> {
+            // Claim the owned driver before closing anything: disconnect callbacks must
+            // not close it a second time, and repeated shutdown must not retain entries.
+            Playwright playwright = PLAYWRIGHT_MAP.remove(browserContext);
+            if (playwright == null) {
+                return;
+            }
+            Path contextDir = CONTEXT_DIR_MAP.remove(browserContext);
             try {
                 PlaywrightUtil.cleanupBrowserContext(browserContext);
-                browserContext.close();
-                if (playwright != null) {
-                    playwright.close();
-                    log.info("Destroy browserContext of Playwright Instance '{}' Success.", playwright);
-                }
             } catch (Exception e) {
-                log.error("Error destroying browser context", e);
+                log.warn("Error cleaning up browser context during shutdown");
+            } finally {
+                try {
+                    browserContext.close();
+                } catch (Exception e) {
+                    log.warn("Error closing browser context during shutdown");
+                } finally {
+                    try {
+                        // Close only the Playwright instance registered by makeObject.
+                        playwright.close();
+                    } catch (Exception e) {
+                        log.warn("Error closing owned Playwright during shutdown");
+                    } finally {
+                        if (contextDir != null) {
+                            CONTEXT_DIR_LAST_USED.remove(contextDir);
+                            CONTEXT_DIR_SIZE.remove(contextDir);
+                            // Shutdown releases tracking only. The configured profile
+                            // may contain pre-existing data; do not add a deletion path.
+                        }
+                    }
+                }
             }
         });
     }
-
 
 
     /**

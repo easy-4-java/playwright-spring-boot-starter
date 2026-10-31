@@ -49,10 +49,13 @@ class BrowserContextPooledObjectFactoryTest {
     // ---- validateObject ----
 
     @Test
-    void validateObject_withNonNull_shouldReturnTrue() {
+    void validateObject_withResponsiveContextWithoutBrowser_shouldReturnTrue() {
         BrowserContextPooledObjectFactory factory = newFactory(new PlaywrightProperties());
-        PooledObject<BrowserContext> pooled = new DefaultPooledObject<>(mock(BrowserContext.class));
+        BrowserContext ctx = mock(BrowserContext.class);
+        when(ctx.cookies()).thenReturn(Collections.emptyList());
+        PooledObject<BrowserContext> pooled = new DefaultPooledObject<>(ctx);
         assertThat(factory.validateObject(pooled)).isTrue();
+        verify(ctx).cookies();
     }
 
     @Test
@@ -60,6 +63,23 @@ class BrowserContextPooledObjectFactoryTest {
         BrowserContextPooledObjectFactory factory = newFactory(new PlaywrightProperties());
         PooledObject<BrowserContext> pooled = new DefaultPooledObject<>(null);
         assertThat(factory.validateObject(pooled)).isFalse();
+    }
+
+    @Test
+    void validateObject_protocolFailure_shouldReturnFalse() {
+        BrowserContext ctx = mock(BrowserContext.class);
+        when(ctx.cookies()).thenThrow(new com.microsoft.playwright.PlaywrightException("context closed"));
+        assertThat(newFactory(new PlaywrightProperties()).validateObject(new DefaultPooledObject<>(ctx))).isFalse();
+    }
+
+    @Test
+    void passivateObject_pageCloseFailure_shouldPropagate() {
+        BrowserContext ctx = mock(BrowserContext.class);
+        Page page = mock(Page.class);
+        when(ctx.pages()).thenReturn(Collections.singletonList(page));
+        doThrow(new com.microsoft.playwright.PlaywrightException("close failed")).when(page).close();
+        assertThatCode(() -> newFactory(new PlaywrightProperties()).passivateObject(new DefaultPooledObject<>(ctx)))
+                .isInstanceOf(com.microsoft.playwright.PlaywrightException.class).hasMessage("close failed");
     }
 
     // ---- activateObject ----
@@ -79,7 +99,7 @@ class BrowserContextPooledObjectFactoryTest {
     }
 
     @Test
-    void activateObject_withDisconnectedBrowser_shouldNotClearCookies() throws Exception {
+    void activateObject_withDisconnectedBrowser_shouldThrow() throws Exception {
         BrowserContextPooledObjectFactory factory = newFactory(new PlaywrightProperties());
         BrowserContext ctx = mock(BrowserContext.class);
         Browser browser = mock(Browser.class);
@@ -87,13 +107,13 @@ class BrowserContextPooledObjectFactoryTest {
         when(browser.isConnected()).thenReturn(false);
         PooledObject<BrowserContext> pooled = new DefaultPooledObject<>(ctx);
 
-        factory.activateObject(pooled);
+        assertThatCode(() -> factory.activateObject(pooled)).isInstanceOf(IllegalStateException.class);
 
         verify(ctx, never()).clearCookies();
     }
 
     @Test
-    void activateObject_withNullBrowser_shouldNotClearCookies() throws Exception {
+    void activateObject_withNullBrowser_shouldClearCookies() throws Exception {
         BrowserContextPooledObjectFactory factory = newFactory(new PlaywrightProperties());
         BrowserContext ctx = mock(BrowserContext.class);
         when(ctx.browser()).thenReturn(null);
@@ -101,11 +121,11 @@ class BrowserContextPooledObjectFactoryTest {
 
         factory.activateObject(pooled);
 
-        verify(ctx, never()).clearCookies();
+        verify(ctx).clearCookies();
     }
 
     @Test
-    void activateObject_clearCookiesThrows_shouldSwallow() throws Exception {
+    void activateObject_clearCookiesThrows_shouldPropagate() throws Exception {
         BrowserContextPooledObjectFactory factory = newFactory(new PlaywrightProperties());
         BrowserContext ctx = mock(BrowserContext.class);
         Browser browser = mock(Browser.class);
@@ -114,7 +134,7 @@ class BrowserContextPooledObjectFactoryTest {
         doThrow(new RuntimeException("ctx closed")).when(ctx).clearCookies();
         PooledObject<BrowserContext> pooled = new DefaultPooledObject<>(ctx);
 
-        assertThatCode(() -> factory.activateObject(pooled)).doesNotThrowAnyException();
+        assertThatCode(() -> factory.activateObject(pooled)).isInstanceOf(RuntimeException.class).hasMessage("ctx closed");
     }
 
     // ---- passivateObject ----
@@ -153,7 +173,7 @@ class BrowserContextPooledObjectFactoryTest {
     }
 
     @Test
-    void passivateObject_disconnectedBrowser_shouldBeNoOp() throws Exception {
+    void passivateObject_disconnectedBrowser_shouldThrow() throws Exception {
         BrowserContextPooledObjectFactory factory = newFactory(new PlaywrightProperties());
         BrowserContext ctx = mock(BrowserContext.class);
         Browser browser = mock(Browser.class);
@@ -161,14 +181,14 @@ class BrowserContextPooledObjectFactoryTest {
         when(browser.isConnected()).thenReturn(false);
         PooledObject<BrowserContext> pooled = new DefaultPooledObject<>(ctx);
 
-        factory.passivateObject(pooled);
+        assertThatCode(() -> factory.passivateObject(pooled)).isInstanceOf(IllegalStateException.class);
 
         verify(ctx, never()).clearCookies();
         verify(ctx, never()).pages();
     }
 
     @Test
-    void passivateObject_nullBrowser_shouldBeNoOp() throws Exception {
+    void passivateObject_nullBrowser_shouldClearCookiesAndPages() throws Exception {
         BrowserContextPooledObjectFactory factory = newFactory(new PlaywrightProperties());
         BrowserContext ctx = mock(BrowserContext.class);
         when(ctx.browser()).thenReturn(null);
@@ -176,8 +196,8 @@ class BrowserContextPooledObjectFactoryTest {
 
         factory.passivateObject(pooled);
 
-        verify(ctx, never()).clearCookies();
-        verify(ctx, never()).pages();
+        verify(ctx).clearCookies();
+        verify(ctx, atLeastOnce()).pages();
     }
 
     // ---- destroyObject ----
@@ -236,6 +256,58 @@ class BrowserContextPooledObjectFactoryTest {
             factory.destroyObject(pooled);
             // close() should have been invoked at least once (retry path).
             verify(ctx, atLeastOnce()).close();
+        }
+    }
+
+    @Test
+    void shutdownCleanupFailureStillClosesOwnerAndReleasesTracking() throws Exception {
+        PlaywrightProperties props = new PlaywrightProperties();
+        props.setIsolated(true);
+        BrowserContextPooledObjectFactory factory = new BrowserContextPooledObjectFactory(props);
+        Playwright owner = mock(Playwright.class);
+        BrowserType type = mock(BrowserType.class);
+        Browser browser = mock(Browser.class);
+        BrowserContext context = mock(BrowserContext.class);
+        when(owner.chromium()).thenReturn(type);
+        when(type.launch(any(BrowserType.LaunchOptions.class))).thenReturn(browser);
+        when(browser.newContext(any(Browser.NewContextOptions.class))).thenReturn(context);
+        doThrow(new com.microsoft.playwright.PlaywrightException("cleanup failed")).when(context).clearCookies();
+        try (MockedStatic<Playwright> creation = org.mockito.Mockito.mockStatic(Playwright.class)) {
+            creation.when(Playwright::create).thenReturn(owner);
+            factory.makeObject();
+            factory.destroy();
+            verify(context).close();
+            verify(owner).close();
+            factory.destroy();
+            verify(owner, times(1)).close();
+        }
+    }
+
+    @Test
+    void shutdownOwnerCloseFailureReleasesTrackingWithoutDeletingProfile() throws Exception {
+        Path existingProfile = java.nio.file.Files.createDirectory(tempDir.resolve("context_000"));
+        Path marker = java.nio.file.Files.writeString(existingProfile.resolve("keep.txt"), "profile fixture");
+        PlaywrightProperties props = new PlaywrightProperties();
+        props.getLaunchPersistentContextOptions().setUserDataDir(tempDir.toString());
+        props.getLaunchPersistentContextOptions().setMaximumContentSize(1);
+        props.getLaunchPersistentContextOptions().setMaximumDirUsageTimeout(Long.MAX_VALUE);
+        BrowserContextPooledObjectFactory factory = new BrowserContextPooledObjectFactory(props);
+        Playwright owner = mock(Playwright.class);
+        BrowserType type = mock(BrowserType.class);
+        BrowserContext context = mock(BrowserContext.class);
+        when(owner.chromium()).thenReturn(type);
+        when(type.launchPersistentContext(any(Path.class), any(BrowserType.LaunchPersistentContextOptions.class)))
+                .thenReturn(context);
+        doThrow(new com.microsoft.playwright.PlaywrightException("driver close failed")).when(owner).close();
+        try (MockedStatic<Playwright> creation = org.mockito.Mockito.mockStatic(Playwright.class)) {
+            creation.when(Playwright::create).thenReturn(owner);
+            factory.makeObject();
+            verify(type).launchPersistentContext(org.mockito.ArgumentMatchers.eq(existingProfile),
+                    any(BrowserType.LaunchPersistentContextOptions.class));
+            factory.destroy();
+            assertThat(java.nio.file.Files.readString(marker)).isEqualTo("profile fixture");
+            factory.destroy();
+            verify(owner, times(1)).close();
         }
     }
 
@@ -405,6 +477,9 @@ class BrowserContextPooledObjectFactoryTest {
 
         assertThatCode(() -> factory.destroy()).doesNotThrowAnyException();
         verify(ctx).close();
+        verify(playwright).close();
+        factory.destroy();
+        verify(playwright, times(1)).close();
     }
 
     // ---- getter helpers ----
@@ -572,3 +647,4 @@ class BrowserContextPooledObjectFactoryTest {
 
     // Unused but kept to satisfy the AtomicBoolean import expectation removed earlier.
 }
+
