@@ -165,7 +165,7 @@ class BrowserContextPoolLifecycleTest {
     }
 
     @Test
-    void shutdownClosesOwnedBrowserEvenWhenContextWasAlreadyClosed() throws Exception {
+    void shutdownClosesOwnedDriverEvenWhenContextWasAlreadyClosed() throws Exception {
         BrowserContextPooledObjectFactory factory = factory();
         BrowserContext context = factory.makeObject().getObject();
         Browser ownedBrowser = context.browser();
@@ -173,7 +173,14 @@ class BrowserContextPoolLifecycleTest {
             context.close();
             assertTrue(ownedBrowser.isConnected());
             factory.destroy();
-            assertFalse(ownedBrowser.isConnected());
+            // Playwright.close() closes the transport, but isConnected() is a cached
+            // event flag in Playwright 1.48. Probe the protocol, not that stale flag.
+            PlaywrightException closed = assertThrows(PlaywrightException.class, () -> {
+                try (BrowserContext unexpected = ownedBrowser.newContext()) {
+                    fail("Owned driver still accepts contexts after shutdown");
+                }
+            });
+            assertEquals("Playwright connection closed", closed.getMessage());
             factory.destroy();
         } finally {
             factory.destroyObject(new DefaultPooledObject<>(context));
