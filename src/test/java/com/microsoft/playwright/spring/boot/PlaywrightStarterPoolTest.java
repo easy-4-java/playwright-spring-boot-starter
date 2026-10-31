@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,7 +29,7 @@ class PlaywrightStarterPoolTest {
                 "playwright.browser-context-pool.test-on-return=true",
                 "playwright.memory-threshold=0.7")
             .run(context -> {
-                assertFalse(context.getStartupFailure() != null, () -> String.valueOf(context.getStartupFailure()));
+                assertNull(context.getStartupFailure());
                 PlaywrightProperties properties = context.getBean(PlaywrightProperties.class);
                 assertTrue(properties.isIsolated());
                 assertEquals(0.7, properties.getMemoryThreshold());
@@ -38,6 +38,15 @@ class PlaywrightStarterPoolTest {
                 assertNotNull(context.getBean(BrowserContextPooledObjectFactory.class));
 
                 BrowserContextPool pool = context.getBean(BrowserContextPool.class);
+                try {
+                    exercisePool(pool);
+                } catch (Exception e) {
+                    throw new AssertionError(e);
+                }
+            });
+    }
+
+    private static void exercisePool(BrowserContextPool pool) throws Exception {
                 assertEquals(0, pool.getNumActive());
                 BrowserContext borrowed = pool.borrowObject();
                 assertNotNull(borrowed);
@@ -53,6 +62,5 @@ class PlaywrightStarterPoolTest {
                 assertTrue(reused.pages().isEmpty(), "Pages from the previous borrower must be closed");
                 assertTrue(reused.cookies().isEmpty(), "Cookies from the previous borrower must be cleared");
                 pool.returnObject(reused);
-            });
     }
 }
